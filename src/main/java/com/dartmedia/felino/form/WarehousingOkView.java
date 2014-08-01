@@ -19,52 +19,47 @@ import com.vaadin.data.util.sqlcontainer.query.FreeformQuery;
 import javax.annotation.PostConstruct;
 import org.vaadin.maddon.label.Header;
 import org.vaadin.maddon.layouts.MVerticalLayout;
-@CDIView("SlipDetailsSearch")
-public class SlipDetailsSearchView extends MVerticalLayout implements View {
-//SlipDetailsSearchSvc data=new SlipDetailsSearchSvc();
+@CDIView("WarehousingOk")
+public class WarehousingOkView extends MVerticalLayout implements View {
+//WarehousingOkSvc data=new WarehousingOkSvc();
     @PostConstruct
     public void initComponent() {
 // @Inject
 //TbrandForm form;
-/**Waybill <p:inputText></p:inputText>        **/
+/**PO No <p:inputText />                                 **/
 StringBuffer sb = new StringBuffer();
-sb.append(" SELECT  /* outreport.xml : logistics.outreport.selectM by SlipDetailsSearch */");
-sb.append("            A.SLIP_I_NO,");
-sb.append("            A.CUST_NO,");
-sb.append("            A.WH_CODE,");
-sb.append("            A.SLIP_NO,");
-sb.append("            A.SLIP_GB,");
-sb.append("            A.DELY_TYPE,");
-sb.append("            A.DELY_GB,");
-sb.append("            A.MSG,");
-sb.append("            A.MSG_NOTE,");
-sb.append("            A.MIXPACK_FLAG,");
-sb.append("            TO_CHAR(A.DELY_HOPE_DATE, 'YYYY/MM/DD') AS DELY_HOPE_DATE,");
-sb.append("            A.DELY_HOPE_YN,");
-sb.append("            A.DELY_HOPE_TIME,");
-sb.append("            TO_CHAR(A.CREATE_DATE, 'YYYY/MM/DD') AS CREATE_DATE,");
-sb.append("            A.CREATE_SEQ,");
-sb.append("            TO_CHAR(A.OUT_CLOSE_DATE, 'YYYY/MM/DD') AS OUT_CLOSE_DATE,");
-sb.append("            A.PACK_YN,");
-sb.append("            DECODE(SIGN(SLIP_FLAG - '7'), 1,(");
-sb.append("                SELECT D.ENTP_NAME");
-sb.append("                FROM   TENTERPRISE D");
-sb.append("                WHERE  D.ENTP_CODE = A.CUST_NO)");
-sb.append("            , B.CUST_NAME) AS CUST_NAME,");
-sb.append("            C.RECEIVER,");
-sb.append("            C.TEL,");
-sb.append("            C.RECEIVER_POST,");
-sb.append("            FUN_ADD_POSTADDR(C.RECEIVER_POST,C.RECEIVER_POST_SEQ,C.RECEIVER_ADDR) AS RECEIVER_ADDR,");
-sb.append("            A.REAL_RECEIVER,");
-sb.append("            TO_CHAR(A.REAL_DELY_DATE, 'YYYY/MM/DD') AS REAL_DELY_DATE");
-sb.append("        FROM");
-sb.append("            TSLIPM A,                        ");
-sb.append("            TCUSTOMER B,");
-sb.append("            TRECEIVER C");
-sb.append("        WHERE A.CUST_NO           = B.CUST_NO(+)");
-sb.append("        AND   A.CUST_NO           = C.CUST_NO(+)");
-sb.append("        AND   A.RECEIVER_SEQ      = C.RECEIVER_SEQ(+)");
-sb.append("        AND   A.SLIP_I_NO         = 10000000111779");
+sb.append(" SELECT /* entpin.xml : logistics.entpin.selectWarehousingOk by WarehousingOk */");
+sb.append("                   A.BALJU_NO,  ");
+sb.append("                 TO_CHAR(A.CTRL_IN_DATE, 'YYYY/MM/DD') AS CTRL_IN_DATE,  ");
+sb.append("                 TO_CHAR(A.BALJU_DATE, 'YYYY/MM/DD') AS BALJU_DATE,  ");
+sb.append("                 A.INSERT_ID,  ");
+sb.append("                 F.USER_NAME AS BALJU_NAME,  ");
+sb.append("                 B.MD_NAME,  ");
+sb.append("                 C.ENTP_NAME,  ");
+sb.append("                 A.IN_END_YN,  ");
+sb.append("                 TO_CHAR(A.IN_END_DATE, 'YYYY/MM/DD') AS IN_END_DATE,  ");
+sb.append("                 A.WH_CODE,  ");
+sb.append("                 A.ENTP_CODE,  ");
+sb.append("                 E.IN_MAN_ID,  ");
+sb.append("                 G.USER_NAME AS IN_NAME,  ");
+sb.append("                 A.ENTP_MAN_SEQ,  ");
+sb.append("                 A.ENTP_BALJU_SEQ,  ");
+sb.append("                 A.MD_CODE,  ");
+sb.append("                 A.OLD_BALJU_NO,  ");
+sb.append("                 A.BALJU_SEQ,  ");
+sb.append("                 E.IN_NO  ");
+sb.append("            FROM TBALJUM      A,  ");
+sb.append("                 TMD          B,  ");
+sb.append("                 TENTERPRISE  C,  ");
+sb.append("                 TINM         E,  ");
+sb.append("                 TUSER        F,  ");
+sb.append("                 TUSER        G  ");
+sb.append("           WHERE A.MD_CODE   = B.MD_CODE  ");
+sb.append("             AND A.ENTP_CODE = C.ENTP_CODE  ");
+sb.append("             AND A.BALJU_NO  = E.BALJU_NO (+)  ");
+sb.append("             AND A.INSERT_ID = F.USER_ID (+)  ");
+sb.append("             AND E.IN_MAN_ID = G.USER_ID (+)  ");
+sb.append("             AND A.BALJU_NO  = 201207270818 ");
 //String fsql = data.makeSql();
 //gSqlContainer sumber=new gSqlContainer();
 MHorizontalLayout sidebar = new MHorizontalLayout();
@@ -73,10 +68,10 @@ MHorizontalLayout toolbar = new MHorizontalLayout();
 toolbar.addComponent(new CheckBox("Indv.Query"));
 //TabSheet tabsheet = new TabSheet();
 //-------------------- Header  ------------------------------
-toolbar.addComponent(new TextField("Waybill No."));
-toolbar.addComponent(new TextField("Shipping Order No"));
-toolbar.addComponent(new TextField("Waybill Type"));
-toolbar.addComponent(new TextField("Shipment Type"));
+toolbar.addComponent(new TextField("Po No"));
+toolbar.addComponent(new TextField("Po Date"));
+toolbar.addComponent(new TextField("Degree"));
+toolbar.addComponent(new TextField("Promo Name"));
 
 
 //-------------------- Header  ------------------------------
@@ -89,7 +84,7 @@ toolmenu.addComponent(new Button("Save"));
 toolmenu.addComponent(new Button("Print"));
 toolmenu.addComponent(new Button("XLS"));
         addComponents(
-                new Header("Waybill Information (SlipDetailsSearch)"
+                new Header("Goods Receipt by PO [Manual] (WarehousingOk)"
         ));
         addComponents(toolmenu);
         addComponents(toolbar);
