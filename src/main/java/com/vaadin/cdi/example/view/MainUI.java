@@ -11,6 +11,7 @@ import com.vaadin.cdi.CDIViewProvider;
 import com.vaadin.cdi.example.util.ViewMenu;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.server.VaadinRequest;
+import com.vaadin.ui.LoginForm;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import javax.inject.Inject;
@@ -36,7 +37,8 @@ public class MainUI extends UI {
         Navigator navigator = new Navigator(this, mainarea);
         navigator.addProvider(viewProvider);
         navigator.setErrorView(ErrorView.class);
-        
+       
+       // addComponent(login);
         setContent(new VerticalLayout(menu.getBasicMenu(), mainarea));
     }    
 }

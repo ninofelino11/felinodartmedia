@@ -1,0 +1,248 @@
+package com.dartmedia.felino.form;
+import com.dartmedia.felino.gSqlContainer;
+import com.dartmedia.felino.fgetsql;
+import com.dartmedia.felino.gSqlContainer;
+import com.vaadin.cdi.CDIView;
+import com.vaadin.data.fieldgroup.BeanFieldGroup;
+import org.vaadin.maddon.fields.MTable;
+import com.vaadin.event.LayoutEvents;
+import org.vaadin.maddon.layouts.MHorizontalLayout;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.TextField;
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.DateField;
+import com.vaadin.ui.PopupDateField;
+import com.vaadin.navigator.View;
+import com.vaadin.navigator.ViewChangeListener;
+import com.vaadin.data.util.sqlcontainer.query.FreeformQuery;
+import javax.annotation.PostConstruct;
+import org.vaadin.maddon.label.Header;
+import org.vaadin.maddon.layouts.MVerticalLayout;
+@CDIView("MultiBroadAfter")
+public class MultiBroadAfterView extends MVerticalLayout implements View {
+//MultiBroadAfterSvc data=new MultiBroadAfterSvc();
+    @PostConstruct
+    public void initComponent() {
+// @Inject
+//TbrandForm form;
+/****/
+StringBuffer sb = new StringBuffer();
+sb.append(" SELECT /* broadresult.xml : broadcast.broadresult.retrieveMultiBroadAfter by MultiBroadAfter */");
+sb.append("         A.*,");
+sb.append("         ROUND(A.ORDER_AMT / A.RUN, 2) AS SALE_MIN,");
+sb.append("         A.ORDER_QTY - A.CANCEL_QTY AS NET_QTY,");
+sb.append("         A.ORDER_AMT - A.CANCEL_AMT AS NET_AMT");
+sb.append("          FROM (SELECT Y.SEQ_FRAME_NO,");
+sb.append("                       Y.SEQ_NO,");
+sb.append("                       Y.GOODS_CODE,");
+sb.append("                       Y.GOODS_NAME,");
+sb.append("                       Y.SALE_END_TIME,");
+sb.append("                       F.SALE_PRICE,");
+sb.append("                       ROUND((NVL(MAX(Y.ETIME), SYSDATE) - MAX(Y.BTIME)) * 1440) AS RUN,");
+sb.append("                       TO_CHAR(MAX(Y.BTIME), 'HH24:MI') AS BTIME,");
+sb.append("                       TO_CHAR(MAX(Y.ETIME), 'HH24:MI') AS ETIME,");
+sb.append("                       SYSDATE,");
+sb.append("                       MAX(Y.SALE_TG_QTY) AS SALE_TG_QTY,");
+sb.append("                       SUM(Y.ORDER_QTY) AS ORDER_QTY,");
+sb.append("                       SUM(Y.ORDER_AMT) AS ORDER_AMT,");
+sb.append("                       SUM(Y.CANCEL_QTY) AS CANCEL_QTY,");
+sb.append("                       SUM(Y.CANCEL_AMT) AS CANCEL_AMT,");
+sb.append("                       Y.MD_CODE AS MD_CODE,");
+sb.append("                       H.PLAN_AMT AS PLAN_AMT");
+sb.append("                  FROM (SELECT C.SEQ_FRAME_NO,");
+sb.append("                               C.BD_DATE AS BD_DATE,");
+sb.append("                               C.BD_BTIME AS BD_BTIME,");
+sb.append("                               C.PROG_CODE AS PROG_CODE,");
+sb.append("                               C.SEQ_NO AS SEQ_NO,");
+sb.append("                               C.GOODS_CODE AS GOODS_CODE,");
+sb.append("                               A.GOODS_NAME AS GOODS_NAME,");
+sb.append("                               FUN_GET_SALE_END_TIME2(C.BD_DATE,");
+sb.append("                                                      C.ETIME,");
+sb.append("                                                      C.GOODS_CODE,");
+sb.append("                                                      C.MEDIA_CODE) AS SALE_END_TIME,");
+sb.append("                               NVL(C.SALE_TG_QTY, 0) AS SALE_TG_QTY,");
+sb.append("                               C.BTIME AS BTIME,");
+sb.append("                               C.ETIME AS ETIME,");
+sb.append("                               DECODE(B.ORDER_D_SEQ, '001', B.ORDER_QTY, 0) AS ORDER_QTY,");
+sb.append("                               B.RSALE_AMT AS ORDER_AMT,");
+sb.append("                               0 AS CANCEL_QTY,");
+sb.append("                               0 AS CANCEL_AMT,");
+sb.append("                               A.MD_CODE AS MD_CODE");
+sb.append("                          FROM TMULTIDTBROAD C, TGOODS A, TORDERDT B");
+sb.append("                         WHERE C.GOODS_CODE = A.GOODS_CODE");
+sb.append("                           AND C.MEDIA_CODE = B.MEDIA_CODE");
+sb.append("                           AND B.MEDIA_GB = '01'");
+sb.append("                           AND C.GOODS_CODE = NVL(B.SET_GOODS_CODE, B.GOODS_CODE)");
+sb.append("                           AND B.ORDER_DATE BETWEEN C.BTIME AND");
+sb.append("                               FUN_GET_SALE_END_TIME2(C.BD_DATE,");
+sb.append("                                                      C.ETIME,");
+sb.append("                                                      C.GOODS_CODE,");
+sb.append("                                                      C.MEDIA_CODE)");
+sb.append("                           AND C.SEQ_FRAME_NO = 'seq_frame_no'");
+sb.append("                        UNION ALL");
+sb.append("                        SELECT C.SEQ_FRAME_NO,");
+sb.append("                               C.BD_DATE AS BD_DATE,");
+sb.append("                               C.BD_BTIME AS BD_BTIME,");
+sb.append("                               C.PROG_CODE AS PROG_CODE,");
+sb.append("                               C.SEQ_NO AS SEQ_NO,");
+sb.append("                               C.GOODS_CODE AS GOODS_CODE,");
+sb.append("                               A.GOODS_NAME AS GOODS_NAME,");
+sb.append("                               FUN_GET_SALE_END_TIME2(C.BD_DATE,");
+sb.append("                                                      C.ETIME,");
+sb.append("                                                      C.GOODS_CODE,");
+sb.append("                                                      C.MEDIA_CODE) AS SALE_END_TIME,");
+sb.append("                               NVL(C.SALE_TG_QTY, 0) AS SALE_TG_QTY,");
+sb.append("                               C.BTIME AS BTIME,");
+sb.append("                               C.ETIME AS ETIME,");
+sb.append("                               0 AS ORDER_QTY,");
+sb.append("                               0 AS ORDER_AMT,");
+sb.append("                               DECODE(B.ORDER_D_SEQ, '001', B.CANCEL_QTY, 0) AS CANCEL_QTY,");
+sb.append("                               B.RSALE_AMT AS CANCEL_AMT,");
+sb.append("                               A.MD_CODE AS MD_CODE");
+sb.append("                          FROM TMULTIDTBROAD C, TGOODS A, TCANCELDT B");
+sb.append("                         WHERE C.GOODS_CODE = A.GOODS_CODE");
+sb.append("                           AND C.GOODS_CODE = NVL(B.SET_GOODS_CODE, B.GOODS_CODE)");
+sb.append("                           AND B.CANCEL_DATE BETWEEN C.BTIME AND");
+sb.append("                               FUN_GET_SALE_END_TIME2(C.BD_DATE,");
+sb.append("                                                      C.ETIME,");
+sb.append("                                                      C.GOODS_CODE,");
+sb.append("                                                      C.MEDIA_CODE)");
+sb.append("                           AND C.MEDIA_CODE = B.MEDIA_CODE");
+sb.append("                           AND B.MEDIA_GB = '01'");
+sb.append("                           AND C.SEQ_FRAME_NO = 'seq_frame_no'");
+sb.append("                        UNION ALL");
+sb.append("                        SELECT C.SEQ_FRAME_NO,");
+sb.append("                               C.BD_DATE AS BD_DATE,");
+sb.append("                               C.BD_BTIME AS BD_BTIME,");
+sb.append("                               C.PROG_CODE AS PROG_CODE,");
+sb.append("                               C.SEQ_NO AS SEQ_NO,");
+sb.append("                               C.GOODS_CODE AS GOODS_CODE,");
+sb.append("                               A.GOODS_NAME AS GOODS_NAME,");
+sb.append("                               FUN_GET_SALE_END_TIME2(C.BD_DATE,");
+sb.append("                                                      C.ETIME,");
+sb.append("                                                      C.GOODS_CODE,");
+sb.append("                                                      C.MEDIA_CODE) AS SALE_END_TIME,");
+sb.append("                               NVL(C.SALE_TG_QTY, 0) AS SALE_TG_QTY,");
+sb.append("                               C.BTIME AS BTIME,");
+sb.append("                               C.ETIME AS ETIME,");
+sb.append("                               0 AS ORDER_QTY,");
+sb.append("                               0 AS ORDER_AMT,");
+sb.append("                               DECODE(B.ORDER_D_SEQ, '001', B.SYSLAST, 0) AS CANCEL_QTY,");
+sb.append("                               B.SYSLAST_AMT AS CANCEL_AMT,");
+sb.append("                               A.MD_CODE AS MD_CODE");
+sb.append("                          FROM TMULTIDTBROAD C, TGOODS A, TCLAIMDT B");
+sb.append("                         WHERE C.GOODS_CODE = A.GOODS_CODE");
+sb.append("                           AND C.GOODS_CODE = NVL(B.SET_GOODS_CODE, B.GOODS_CODE)");
+sb.append("                           AND B.CLAIM_GB = '30'");
+sb.append("                           AND B.CLAIM_DATE BETWEEN C.BTIME AND");
+sb.append("                               FUN_GET_SALE_END_TIME2(C.BD_DATE,");
+sb.append("                                                      C.ETIME,");
+sb.append("                                                      C.GOODS_CODE,");
+sb.append("                                                      C.MEDIA_CODE)");
+sb.append("                           AND B.MEDIA_GB = '01'");
+sb.append("                           AND C.MEDIA_CODE = B.MEDIA_CODE");
+sb.append("                           AND C.SEQ_FRAME_NO = 'seq_frame_no'");
+sb.append("                        UNION ALL");
+sb.append("                        SELECT C.SEQ_FRAME_NO,");
+sb.append("                               C.BD_DATE AS BD_DATE,");
+sb.append("                               C.BD_BTIME AS BD_BTIME,");
+sb.append("                               C.PROG_CODE AS PROG_CODE,");
+sb.append("                               C.SEQ_NO AS SEQ_NO,");
+sb.append("                               C.GOODS_CODE AS GOODS_CODE,");
+sb.append("                               A.GOODS_NAME AS GOODS_NAME,");
+sb.append("                               FUN_GET_SALE_END_TIME2(C.BD_DATE,");
+sb.append("                                                      C.ETIME,");
+sb.append("                                                      C.GOODS_CODE,");
+sb.append("                                                      C.MEDIA_CODE) AS SALE_END_TIME,");
+sb.append("                               NVL(C.SALE_TG_QTY, 0) AS SALE_TG_QTY,");
+sb.append("                               C.BTIME AS BTIME,");
+sb.append("                               C.ETIME AS ETIME,");
+sb.append("                               0 AS ORDER_QTY,");
+sb.append("                               0 AS ORDER_AMT,");
+sb.append("                               0 AS CANCEL_QTY,");
+sb.append("                               0 AS CANCEL_AMT,");
+sb.append("                               A.MD_CODE AS MD_CODE");
+sb.append("                          FROM TMULTIDTBROAD C, TGOODS A");
+sb.append("                         WHERE C.GOODS_CODE = A.GOODS_CODE");
+sb.append("                           AND C.SEQ_FRAME_NO = 'seq_frame_no') Y,");
+sb.append("                       TGOODSPRICE F,");
+sb.append("                       TMULTIFRAMESCHE H");
+sb.append("                 WHERE Y.SEQ_FRAME_NO = H.SEQ_FRAME_NO");
+sb.append("                   AND Y.GOODS_CODE = F.GOODS_CODE");
+sb.append("                   AND (F.GOODS_CODE, F.APPLY_DATE) =");
+sb.append("                       (SELECT G.GOODS_CODE, MAX(G.APPLY_DATE)");
+sb.append("                          FROM TGOODSPRICE G");
+sb.append("                         WHERE G.GOODS_CODE = F.GOODS_CODE");
+sb.append("                           AND G.APPLY_DATE <= H.BD_BTIME");
+sb.append("                         GROUP BY G.GOODS_CODE)");
+sb.append("                 GROUP BY Y.SEQ_FRAME_NO,");
+sb.append("                          Y.SEQ_NO,");
+sb.append("                          Y.GOODS_CODE,");
+sb.append("                          Y.GOODS_NAME,");
+sb.append("                          Y.SALE_END_TIME,");
+sb.append("                          F.SALE_PRICE,");
+sb.append("                          Y.MD_CODE,");
+sb.append("                          H.PLAN_AMT");
+sb.append("                 ORDER BY Y.SEQ_FRAME_NO, Y.SEQ_NO, Y.GOODS_CODE) A");
+sb.append("");
+sb.append("                 ");
+sb.append("SELECT /* broadresult.xml : broadcast.broadresult.retrieveMultiBroadAfterDt by MultiBroadAfter */");
+sb.append("                 A.SEQ_FRAME_NO,");
+sb.append("                A.USER_GB,                                         ");
+sb.append("                A.AFTER_CODE,                     ");
+sb.append("                A.AFTER_CODE AS AFTER_CODE_ORG,    ");
+sb.append("                A.AFTER_INFO,                                     ");
+sb.append("                A.GOODS_CODE                                     ");
+sb.append("           FROM TMULTIBROADAFTER A                                      ");
+sb.append("          WHERE A.SEQ_FRAME_NO = 'seq_frame_no'");
+sb.append("          AND   A.GOODS_CODE   = 'goods_code'");
+sb.append("          AND   A.USER_GB      = 'user_gb'  ");
+//String fsql = data.makeSql();
+//gSqlContainer sumber=new gSqlContainer();
+MHorizontalLayout sidebar = new MHorizontalLayout();
+MHorizontalLayout isicontents=new MHorizontalLayout();
+MHorizontalLayout toolbar = new MHorizontalLayout();
+toolbar.addComponent(new CheckBox("Indv.Query"));
+//TabSheet tabsheet = new TabSheet();
+//-------------------- Header  ------------------------------
+toolbar.addComponent(new TextField("Promo Name"));
+toolbar.addComponent(new TextField("Promo Name"));
+toolbar.addComponent(new PopupDateField("~"));
+toolbar.addComponent(new TextField("Promo Name"));
+toolbar.addComponent(new TextField("Promo Name"));
+toolbar.addComponent(new TextField("Progra"));
+
+
+//-------------------- Header  ------------------------------
+MHorizontalLayout toolmenu;
+toolmenu = new MHorizontalLayout();
+toolmenu.addComponent(new Button("Ret"));
+toolmenu.addComponent(new Button("Ins"));
+toolmenu.addComponent(new Button("Del"));
+toolmenu.addComponent(new Button("Save"));
+toolmenu.addComponent(new Button("Print"));
+toolmenu.addComponent(new Button("XLS"));
+        addComponents(
+                new Header("Program Result (MultiBroadAfter)"
+        ));
+        addComponents(toolmenu);
+        addComponents(toolbar);
+        addComponents(isicontents);
+MTable table=new MTable();
+//-------------------- Header Table ---judul untuk table----------
+table.addContainerProperty("No", String.class,  null);
+table.addContainerProperty("ITEM", String.class,  null);
+table.addContainerProperty("No", String.class,  null);
+//-------------------- Header Table ------------------------------
+   isicontents.addComponents(table);
+        addLayoutClickListener(new LayoutEvents.LayoutClickListener() {
+            @Override
+            public void layoutClick(LayoutEvents.LayoutClickEvent event) {
+            }
+        });
+    }
+    @Override
+    public void enter(ViewChangeListener.ViewChangeEvent event) {
+    }
+}

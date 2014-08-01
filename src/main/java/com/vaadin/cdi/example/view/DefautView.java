@@ -4,6 +4,9 @@ import com.vaadin.cdi.CDIView;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
+import com.vaadin.ui.LoginForm;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.Window;
 import javax.annotation.PostConstruct;
 import org.vaadin.maddon.label.Header;
 import org.vaadin.maddon.label.RichText;
@@ -18,9 +21,16 @@ public class DefautView extends MVerticalLayout implements View {
 
     @PostConstruct
     public void initComponent() {
+        
         addComponents(
                 new RichText().withMarkDownResource("/welcome.md")
         );
+        Panel loginPanel = new Panel("Login");
+loginPanel.setWidth("250px");
+        
+         LoginForm login = new LoginForm();
+         addComponent(login);
+        // loginPanel.addComponent(new LoginForm());
 
     }
 
