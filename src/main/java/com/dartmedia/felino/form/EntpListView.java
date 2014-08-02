@@ -1,37 +1,21 @@
 package com.dartmedia.felino.form;
-import com.dartmedia.felino.gSqlContainer;
-import com.dartmedia.felino.fgetsql;
-import com.dartmedia.felino.gSqlContainer;
 import com.vaadin.cdi.CDIView;
-import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import org.vaadin.maddon.fields.MTable;
 import com.vaadin.event.LayoutEvents;
 import org.vaadin.maddon.layouts.MHorizontalLayout;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
-import com.vaadin.data.util.sqlcontainer.query.FreeformQuery;
 import javax.annotation.PostConstruct;
 import org.vaadin.maddon.label.Header;
 import org.vaadin.maddon.layouts.MVerticalLayout;
 @CDIView("EntpList")
 public class EntpListView extends MVerticalLayout implements View {
-//EntpListSvc data=new EntpListSvc();
+//@Inject   TenterpriseFacade cf;
+//@Inject  TenterpriseForm form;
     @PostConstruct
     public void initComponent() {
-// @Inject
-//TbrandForm form;
-/**Reg Term <p:calendar id='from_date' /> ~ <p:calendar id='to_date'/>
-Vendor <p:inputText id='entp_code' />
-//select a.entp_code, a.entp_name, a.s_idno, b.entp_man_name from tenterprise a, tentpuser b where a.entp_code = b.entp_code
-Deal <p:selectOneMenu id='close_yn'>
-</p:selectOneMenu>
-//select code_mgroup, code_name from tcode where code_lgroup = 'B135'
-Vendor Type <p:inputText/>
-//select * from tcode where code_lgroup = 'B001'
-**/
 StringBuffer sb = new StringBuffer();
 sb.append("SELECT");
 sb.append("/*");

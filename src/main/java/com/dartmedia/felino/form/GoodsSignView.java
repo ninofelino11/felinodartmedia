@@ -24,6 +24,8 @@ import org.vaadin.maddon.layouts.MVerticalLayout;
 public class GoodsSignView extends MVerticalLayout implements View {
     
 //GoodsSignSvc data=new GoodsSignSvc();
+ //   @Inject   TenterpriseFacade cf;
+//@Inject  TenterpriseForm form;
     @PostConstruct
     public void initComponent() {
 /**Apply Date <p:calendar id='fromDate'/> ~ <p:calendar id='toDate'/>

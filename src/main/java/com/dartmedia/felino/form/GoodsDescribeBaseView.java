@@ -1,21 +1,29 @@
 package com.dartmedia.felino.form;
+import com.dartmedia.felino.Tdescribecode;
+import com.dartmedia.felino.TdescribecodeFacade;
 import com.dartmedia.felino.gSqlContainer;
 import com.vaadin.cdi.CDIView;
-import com.vaadin.data.util.sqlcontainer.SQLContainer;
-import com.vaadin.data.util.sqlcontainer.connection.SimpleJDBCConnectionPool;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
-import java.sql.SQLException;
+import com.vaadin.ui.Notification;
+import com.vaadin.ui.TextField;
+import java.util.List;
 import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import org.vaadin.maddon.fields.MTable;
+import org.vaadin.maddon.fields.MValueChangeEvent;
+import org.vaadin.maddon.fields.MValueChangeListener;
 import org.vaadin.maddon.label.Header;
 import org.vaadin.maddon.layouts.MHorizontalLayout;
 import org.vaadin.maddon.layouts.MVerticalLayout;
 @CDIView("GoodsDescribeBase")
 public class GoodsDescribeBaseView extends MVerticalLayout implements View {
 //GoodsDescribeBaseSvc data=new GoodsDescribeBaseSvc();
+@Inject   TdescribecodeFacade cf;
+//@Inject  TenterpriseForm form;
     @PostConstruct
     public void initComponent() {
 /**Description Code/Title <p:inputText/>
@@ -55,34 +63,23 @@ sb.append("'101'");
 //String fsql = data.makeSql();
 gSqlContainer sumber=new gSqlContainer();
 //MTable table=new MTable();
-
-
-
-
-
-
-
-
-
+List<Tdescribecode> findAll = cf.findAll();
+MTable<Tdescribecode> table=new MTable<Tdescribecode>(Tdescribecode.class);
+table.setBeans(findAll);
+table.addMValueChangeListener(new MValueChangeListener<Tdescribecode>() {
+    @Override
+    public void valueChange(MValueChangeEvent<Tdescribecode> event) {
+  //  Notification.show("ss");
+//    form.setEntity(event.getValue());
+    }   
+    });
 
 
 
 
 
 MHorizontalLayout sidebar = new MHorizontalLayout();
-
 MHorizontalLayout toolbar = new MHorizontalLayout();
-toolbar.addComponent(new CheckBox("Indv.Query"));
-//TabSheet tabsheet = new TabSheet();
-//-------------------- Header  ------------------------------
-//-toolbar.addComponent(new PopupDateField("My Date"));
-//-toolbar.addComponent(new TextField("Indv.Query"));
-//-toolbar.addComponent(new ComboBox("My ComboBox"));
-//-toolbar.addComponent(new Button("My ComboBox"));
-//-------------------- Header  ------------------------------
-//-------------------- Header Table ---judul untuk table----------
-
-//-------------------- Header Table ------------------------------ 
 MHorizontalLayout toolmenu;
 toolmenu = new MHorizontalLayout();
 toolmenu.addComponent(new Button("Ret"));
@@ -90,40 +87,17 @@ toolmenu.addComponent(new Button("Ins"));
 toolmenu.addComponent(new Button("Save"));
 toolmenu.addComponent(new Button("Print"));
 toolmenu.addComponent(new Button("XLS"));
-        addComponents( 
+
+toolbar.addComponent(new TextField("Description Code/Title"));      
+//-- No, Desc Code Description Title, Web Use,Essential  
+
+addComponents( 
                 new Header("GoodsDescribeBase")
         );
         addComponents(toolmenu);
         addComponents(toolbar); 
         addComponents(sidebar);
-        
-try{
-            SimpleJDBCConnectionPool connectionPool = new SimpleJDBCConnectionPool(
-             "oracle.jdbc.OracleDriver", "jdbc:oracle:thin:@localhost:1521/XE",
-             "dartmedia", "dartmedia",2,5);        
-       // gSqlContainer pool=new gSqlContainer();
-             SQLContainer container;
-            //  container = new SQLContainer(new FreeformQuery(
-             // fsql,connectionPool,"BRAND_CODE"));
-//             TreeTable table = new TreeTable("Menu", container);
-            // table.setWidth("200px");
-                 
-  //             sidebar.addComponents(table); 
-              //  sidebar.addComponents(form); 
- } catch (SQLException e) {
-     e.printStackTrace();
-}
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+        addComponents(table);
         
         addLayoutClickListener(new LayoutEvents.LayoutClickListener() {
             @Override

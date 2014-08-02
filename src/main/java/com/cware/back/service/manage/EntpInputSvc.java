@@ -1,6 +1,11 @@
 
 package com.cware.back.service.manage;
 
+import com.cware.back.common.Construct;
+import com.cware.back.common.DBUtils;
+import com.cware.back.common.RetrieveModel;
+import com.cware.back.common.StoreException;
+import com.dartmedia.felino.Tenterprise;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,15 +14,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import com.cware.back.common.Construct;
-import com.cware.back.common.DBUtils;
-import com.cware.back.common.RetrieveModel;
-import com.cware.back.common.StoreException;
-import com.cware.back.entity.table.Tenterprise;
+//import com.cware.back.entity.table.Tenterprise;
 
 /**
  * 업체등록 Service class
@@ -350,63 +349,9 @@ public class EntpInputSvc {
 
             pstmt = con.prepareStatement(makeSqlInsert(entp));
             int index = 1;
-            pstmt.setString(index++,entp.getEntp_code());
-            pstmt.setString(index++,entp.getEntp_name());
-            pstmt.setString(index++,entp.getEntp_gubun());
-            pstmt.setString(index++,entp.getDely_gb());
-            pstmt.setString(index++,entp.getS_idno());
-            pstmt.setString(index++,entp.getWork_type());
-            pstmt.setString(index++,entp.getWork_kind());
-            pstmt.setString(index++,entp.getEntp_post());
-            pstmt.setString(index++,entp.getEntp_post_seq());
-            pstmt.setString(index++,entp.getEntp_addr());
-            pstmt.setString(index++,entp.getEntp_ddd());
-            pstmt.setString(index++,entp.getEntp_tel1());
-            pstmt.setString(index++,entp.getEntp_tel2());
-            pstmt.setString(index++,entp.getEntp_tel3());
-            pstmt.setString(index++,entp.getEntp_fax1());
-            pstmt.setString(index++,entp.getEntp_fax2());
-            pstmt.setString(index++,entp.getEntp_fax3());
-            pstmt.setString(index++,entp.getEmail_addr());
-            pstmt.setString(index++,entp.getOwner_name());
-            pstmt.setString(index++,entp.getDishonor_yn());
-            pstmt.setString(index++,entp.getSecret_no());
-            pstmt.setString(index++,entp.getFirst_date());
-            pstmt.setString(index++,entp.getClose_date());
-            pstmt.setString(index++,entp.getClose_reason());
-            pstmt.setString(index++,entp.getEtc());
-            pstmt.setString(index++,entp.getInsert_id());
-            pstmt.setString(index++,entp.getModify_id());
-
+       
             //= log Save Data ---------------------
             StringBuffer logString = new StringBuffer();
-            logString.append( entp.getEntp_code()         ); logString.append( "/" );
-            logString.append( entp.getEntp_name()         ); logString.append( "/" );
-            logString.append( entp.getEntp_gubun()        ); logString.append( "/" );
-            logString.append( entp.getDely_gb()        	  ); logString.append( "/" );
-            logString.append( entp.getS_idno()            ); logString.append( "/" );
-            logString.append( entp.getWork_type()         ); logString.append( "/" );
-            logString.append( entp.getWork_kind()         ); logString.append( "/" );
-            logString.append( entp.getEntp_post()         ); logString.append( "/" );
-            logString.append( entp.getEntp_post_seq()     ); logString.append( "/" );
-            logString.append( entp.getEntp_addr()         ); logString.append( "/" );
-            logString.append( entp.getEntp_ddd()          ); logString.append( "/" );
-            logString.append( entp.getEntp_tel1()         ); logString.append( "/" );
-            logString.append( entp.getEntp_tel2()         ); logString.append( "/" );
-            logString.append( entp.getEntp_tel3()         ); logString.append( "/" );
-            logString.append( entp.getEntp_fax1()         ); logString.append( "/" );
-            logString.append( entp.getEntp_fax2()         ); logString.append( "/" );
-            logString.append( entp.getEntp_fax3()         ); logString.append( "/" );
-            logString.append( entp.getEmail_addr()        ); logString.append( "/" );
-            logString.append( entp.getOwner_name()        ); logString.append( "/" );
-            logString.append( entp.getDishonor_yn()       ); logString.append( "/" );
-            logString.append( entp.getSecret_no()         ); logString.append( "/" );
-            logString.append( entp.getFirst_date()        ); logString.append( "/" );
-            logString.append( entp.getClose_date()        ); logString.append( "/" );
-            logString.append( entp.getClose_reason()      ); logString.append( "/" );
-            logString.append( entp.getEtc()               ); logString.append( "/" );
-            logString.append( entp.getInsert_id()         ); logString.append( "/" );
-            logString.append( entp.getModify_id()         ); logString.append( "/" );
             logSave.info(logString.toString());
 
             executedRtn = pstmt.executeUpdate();
@@ -439,65 +384,6 @@ public class EntpInputSvc {
         try {
             pstmt = con.prepareStatement(makeSqlUpdate(entp));
             int index = 1;
-            pstmt.setString(index++,entp.getEntp_name());
-            pstmt.setString(index++,entp.getEntp_gubun());
-            pstmt.setString(index++,entp.getDely_gb());
-            pstmt.setString(index++,entp.getS_idno());
-            pstmt.setString(index++,entp.getWork_type());
-            pstmt.setString(index++,entp.getWork_kind());
-            pstmt.setString(index++,entp.getEntp_post());
-            pstmt.setString(index++,entp.getEntp_post_seq());
-            pstmt.setString(index++,entp.getEntp_addr());
-            pstmt.setString(index++,entp.getEntp_ddd());
-            pstmt.setString(index++,entp.getEntp_tel1());
-            pstmt.setString(index++,entp.getEntp_tel2());
-            pstmt.setString(index++,entp.getEntp_tel3());
-            pstmt.setString(index++,entp.getEntp_fax1());
-            pstmt.setString(index++,entp.getEntp_fax2());
-            pstmt.setString(index++,entp.getEntp_fax3());
-            pstmt.setString(index++,entp.getEmail_addr());
-            pstmt.setString(index++,entp.getOwner_name());
-            pstmt.setString(index++,entp.getDishonor_yn());
-            pstmt.setString(index++,entp.getSecret_no());
-            pstmt.setString(index++,entp.getFirst_date());
-            pstmt.setString(index++,entp.getClose_date());
-            pstmt.setString(index++,entp.getClose_reason());
-            pstmt.setString(index++,entp.getEtc());
-            pstmt.setString(index++,entp.getModify_id());
-            pstmt.setString(index++,entp.getEntp_code());
-
-            //= log Save Data ---------------------
-            StringBuffer logString = new StringBuffer();
-            logString.append( entp.getEntp_name()         ); logString.append( "/" );
-            logString.append( entp.getEntp_gubun()        ); logString.append( "/" );
-            logString.append( entp.getDely_gb()        	  ); logString.append( "/" );
-            logString.append( entp.getS_idno()            ); logString.append( "/" );
-            logString.append( entp.getWork_type()         ); logString.append( "/" );
-            logString.append( entp.getWork_kind()         ); logString.append( "/" );
-            logString.append( entp.getEntp_post()         ); logString.append( "/" );
-            logString.append( entp.getEntp_post_seq()     ); logString.append( "/" );
-            logString.append( entp.getEntp_addr()         ); logString.append( "/" );
-            logString.append( entp.getEntp_ddd()          ); logString.append( "/" );
-            logString.append( entp.getEntp_tel1()         ); logString.append( "/" );
-            logString.append( entp.getEntp_tel2()         ); logString.append( "/" );
-            logString.append( entp.getEntp_tel3()         ); logString.append( "/" );
-            logString.append( entp.getEntp_fax1()         ); logString.append( "/" );
-            logString.append( entp.getEntp_fax2()         ); logString.append( "/" );
-            logString.append( entp.getEntp_fax3()         ); logString.append( "/" );
-            logString.append( entp.getEmail_addr()        ); logString.append( "/" );
-            logString.append( entp.getOwner_name()        ); logString.append( "/" );
-            logString.append( entp.getDishonor_yn()       ); logString.append( "/" );
-            logString.append( entp.getSecret_no()         ); logString.append( "/" );
-            logString.append( entp.getFirst_date()        ); logString.append( "/" );
-            logString.append( entp.getClose_date()        ); logString.append( "/" );
-            logString.append( entp.getClose_reason()      ); logString.append( "/" );
-            logString.append( entp.getEtc()               ); logString.append( "/" );
-            logString.append( entp.getInsert_date()       ); logString.append( "/" );
-            logString.append( entp.getInsert_id()         ); logString.append( "/" );
-            logString.append( entp.getModify_date()       ); logString.append( "/" );
-            logString.append( entp.getModify_id()         ); logString.append( "/" );
-            logString.append( entp.getEntp_code()         ); logString.append( "/" );
-            logSave.info(logString.toString());
 
             executedRtn = pstmt.executeUpdate();
 

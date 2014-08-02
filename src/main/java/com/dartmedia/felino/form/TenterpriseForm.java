@@ -1,6 +1,6 @@
 package com.dartmedia.felino.form;
 
-import com.cware.back.entity.table.Tenterprise;
+import com.dartmedia.felino.Tenterprise;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.TextField;
