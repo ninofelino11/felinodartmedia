@@ -1,25 +1,56 @@
 package com.dartmedia.felino.form;
+import com.dartmedia.felino.Tbank;
+import com.dartmedia.felino.TbankFacade;
+import com.dartmedia.felino.fgetsql;
+import com.dartmedia.felino.gSqlContainer;
+import com.dartmedia.felino.gSqlContainer;
 import com.vaadin.cdi.CDIView;
-import org.vaadin.maddon.fields.MTable;
+import com.vaadin.data.fieldgroup.BeanFieldGroup;
+import com.vaadin.data.util.sqlcontainer.query.FreeformQuery;
 import com.vaadin.event.LayoutEvents;
-import org.vaadin.maddon.layouts.MHorizontalLayout;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.CheckBox;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.DateField;
+import com.vaadin.ui.Notification;
+import com.vaadin.ui.PopupDateField;
+import com.vaadin.ui.TextField;
+import java.util.List;
 import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import org.vaadin.maddon.fields.MTable;
+import org.vaadin.maddon.fields.MValueChangeEvent;
+import org.vaadin.maddon.fields.MValueChangeListener;
 import org.vaadin.maddon.label.Header;
+import org.vaadin.maddon.layouts.MHorizontalLayout;
 import org.vaadin.maddon.layouts.MVerticalLayout;
 @CDIView("BankCode")
 public class BankCodeView extends MVerticalLayout implements View {
 //BankCodeSvc data=new BankCodeSvc();
+@Inject  TbankFacade cf;
+//@Inject  TenterpriseForm form;
     @PostConstruct
     public void initComponent() {
-// @Inject
-//TbrandForm form;
 /**Bank code <p:inputText />Bank name <p:inputText /><p:selectOneListbox/>            <f:selectItem itemLabel="All" itemValue="" />            <f:selectItem itemLabel="Use" itemValue="1" />            <f:selectItem itemLabel="Unused" itemValue="0" /> </p:selectOneListbox>**/
 StringBuffer sb = new StringBuffer();
+sb.append("");
+sb.append("/* Bank Code, Bank Name, Use, Remark */");
+sb.append("        SELECT");
+sb.append("            BANK_CODE,");
+sb.append("            BANK_NAME,");
+sb.append("            USE_YN,");
+sb.append("            REMARK,              ");
+sb.append("            INSERT_DATE,");
+sb.append("            TO_CHAR(INSERT_DATE,'YYYY/MM/DD') AS INSERT_DATE");
+sb.append("        FROM       ");
+sb.append("            TBANK");
+sb.append("        WHERE BANK_CODE LIKE '%002%'          ");
+sb.append("        AND BANK_NAME LIKE '%BANK%'");
+sb.append("        AND USE_YN         LIKE '%1%'");
+sb.append("        ORDER BY BANK_CODE ASC;    ");
+sb.append(" ");
 //String fsql = data.makeSql();
 //gSqlContainer sumber=new gSqlContainer();
 MHorizontalLayout sidebar = new MHorizontalLayout();
@@ -49,14 +80,23 @@ toolmenu.addComponent(new Button("XLS"));
         ));
         addComponents(toolmenu);
         addComponents(toolbar);
-        addComponents(isicontents);
-MTable table=new MTable();
+//        addComponents(isicontents);
+//MTable table=new MTable();
 //-------------------- Header Table ---judul untuk table----------
-table.addContainerProperty("No", String.class,  null);
-table.addContainerProperty("ITEM", String.class,  null);
-table.addContainerProperty("No", String.class,  null);
+List<Tbank> findAll = cf.findAll();
+MTable<Tbank> table=new MTable<Tbank>(Tbank.class);
+        //.withProperties("entpName");
+table.setBeans(findAll);
+table.addMValueChangeListener(new MValueChangeListener<Tbank>() {
+    @Override
+    public void valueChange(MValueChangeEvent<Tbank> event) {
+    Notification.show("ss");
+//    form.setEntity(event.getValue());
+    }
+    });
+//table.addContainerProperty("No", String.class,  null);
 //-------------------- Header Table ------------------------------
-   isicontents.addComponents(table);
+  addComponents(table);
         addLayoutClickListener(new LayoutEvents.LayoutClickListener() {
             @Override
             public void layoutClick(LayoutEvents.LayoutClickEvent event) {

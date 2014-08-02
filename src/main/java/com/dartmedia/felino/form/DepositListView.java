@@ -25,42 +25,29 @@ import org.vaadin.maddon.fields.MTable;
 import org.vaadin.maddon.fields.MValueChangeEvent;
 import org.vaadin.maddon.fields.MValueChangeListener;
 import org.vaadin.maddon.layouts.MVerticalLayout;
-@CDIView("DelyDiary")
-public class DelyDiaryView extends MVerticalLayout implements View {
-//DelyDiarySvc data=new DelyDiarySvc();
+@CDIView("DepositList")
+public class DepositListView extends MVerticalLayout implements View {
+//DepositListSvc data=new DepositListSvc();
 //@Inject   TenterpriseFacade cf;
 //@Inject  TenterpriseForm form;
     @PostConstruct
     public void initComponent() {
-/****/
+/**Deposit amount <p:inputText /> ~ <p:inputText />**/
 StringBuffer sb = new StringBuffer();
-sb.append("");
-sb.append("  select /* sql_logistics_base_code.xml : logistics.base.code.selectDelyDiary by DelyDiary */");
-sb.append("                  'DAY_' || ROWNUM AS CELL_ID,");
-sb.append("                DAYS,");
-sb.append("                DATE_D,");
-sb.append("                NVL(DELY_GB, #{dely_gb}) AS DELY_GB,");
-sb.append("                NVL(TO_CHAR( YYMMDD, 'YYYY/MM/DD'), TO_CHAR(ALL_DATE, 'YYYY/MM/DD')) AS YYMMDD,");
-sb.append("                NVL(DAY_GB, '00' || DAYS) AS DAY_GB,");
-sb.append("                NVL(WORK_YN,DECODE(DAYS, '1', '0', '7', '0' ,'1')) AS WORK_YN,");
-sb.append("                NVL(OFF_NAME, '') AS OFF_NAME,");
-sb.append("                INSERT_ID,");
-sb.append("                TO_CHAR( INSERT_DATE, 'YYYY/MM/DD HH24:MI:SS') AS INSERT_DATE,");
-sb.append("                MODIFY_ID,");
-sb.append("                TO_CHAR( MODIFY_DATE, 'YYYY/MM/DD HH24:MI:SS') AS MODIFY_DATE");
-sb.append("          from ( SELECT DAYS, DATE_D, WEEK_GRP, WEEK_GRP + (DAYS -1) AS ALL_DATE");
-sb.append("                   FROM (");
-sb.append("                         SELECT TO_CHAR (TRUNC (BASE_MON, 'd') + LEVEL - 1, 'd') DAYS,");
-sb.append("                                TO_CHAR (TRUNC (BASE_MON, 'd') + LEVEL - 1, 'fmdd') DATE_D,");
-sb.append("                                TRUNC (TRUNC (BASE_MON, 'd') + LEVEL - 1, 'd') WEEK_GRP");
-sb.append("                           FROM (SELECT TO_DATE (#{yymmdd}, 'YYYYMM') BASE_MON");
-sb.append("                                   FROM   DUAL)");
-sb.append("             CONNECT BY TRUNC (BASE_MON, 'd') + LEVEL - 1 &lt; = TRUNC (LAST_DAY (BASE_MON), 'd') + 6");
-sb.append("            )) A,");
-sb.append("            TDELYDAY B");
-sb.append("          where A.ALL_DATE = B.YYMMDD(+)");
-sb.append("            and B.DELY_GB(+) = 301");
-sb.append("        order by YYMMDD     ;            ");
+sb.append("    SELECT /* deposit.xml : custcenter.deposit.selectDepositList by DepositList */");
+sb.append("                   A.CUST_NO        AS CUST_NO, ");
+sb.append("                 C.RECEIVER       AS CUST_NAME, ");
+sb.append("                 C.TEL,");
+sb.append("                 A.USE_PB_DEPOSIT AS USE_PB_DEPOSIT, ");
+sb.append("                 A.USE_DEPOSIT    AS USE_DEPOSIT ");
+sb.append("            FROM TCUSTSYSTEM A, ");
+sb.append("                 TRECEIVER   C ");
+sb.append("           WHERE A.CUST_NO        = C.CUST_NO ");
+sb.append("             AND C.DEFAULT_YN     = '1' ");
+sb.append("             AND A.USE_PB_DEPOSIT BETWEEN TO_NUMBER(0) AND TO_NUMBER(1000000) ");
+sb.append("             AND A.USE_PB_DEPOSIT > 0  ");
+sb.append("           ORDER BY A.CUST_NO ;        ");
+sb.append("       ");
 //String fsql = data.makeSql();
 //gSqlContainer sumber=new gSqlContainer();
 MHorizontalLayout sidebar = new MHorizontalLayout();
@@ -70,8 +57,7 @@ toolbar.addComponent(new CheckBox("Indv.Query"));
 //TabSheet tabsheet = new TabSheet();
 //-------------------- Header  ------------------------------
 toolbar.addComponent(new TextField("Promo Name"));
-toolbar.addComponent(new PopupDateField("~"));
-//- table.setColumnHeaders( new String[] {"Property 1", "Property2"} );
+toolbar.addComponent(new TextField("Promo Name"));
 
 
 //-------------------- Header  ------------------------------
@@ -84,7 +70,7 @@ toolmenu.addComponent(new Button("Save"));
 toolmenu.addComponent(new Button("Print"));
 toolmenu.addComponent(new Button("XLS"));
         addComponents(
-                new Header("Holiday Management (DelyDiary)"
+                new Header("Deposit List (DepositList)"
         ));
         addComponents(toolmenu);
         addComponents(toolbar);
