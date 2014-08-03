@@ -1,33 +1,46 @@
 package com.dartmedia.felino.form;
-import com.dartmedia.felino.gSqlContainer;
 import com.dartmedia.felino.fgetsql;
+import com.dartmedia.felino.gSqlContainer;
 import com.dartmedia.felino.gSqlContainer;
 import com.vaadin.cdi.CDIView;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
-import org.vaadin.maddon.fields.MTable;
+import com.vaadin.data.util.sqlcontainer.query.FreeformQuery;
 import com.vaadin.event.LayoutEvents;
-import org.vaadin.maddon.layouts.MHorizontalLayout;
+import com.vaadin.navigator.View;
+import com.vaadin.navigator.ViewChangeListener;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.DateField;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.PopupDateField;
-import com.vaadin.navigator.View;
-import com.vaadin.navigator.ViewChangeListener;
-import com.vaadin.data.util.sqlcontainer.query.FreeformQuery;
+import com.vaadin.ui.TextField;
+import java.util.Iterator;
+import java.util.List;
 import javax.annotation.PostConstruct;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import org.vaadin.maddon.fields.MTable;
 import org.vaadin.maddon.label.Header;
+import org.vaadin.maddon.layouts.MHorizontalLayout;
 import org.vaadin.maddon.layouts.MVerticalLayout;
 @CDIView("UserOrderList")
+
 public class UserOrderListView extends MVerticalLayout implements View {
 //UserOrderListSvc data=new UserOrderListSvc();
     @PostConstruct
+   
     public void initComponent() {
 // @Inject
 //TbrandForm form;
 /****/
-StringBuffer sb = new StringBuffer();
+
+
+        StringBuffer sb = new StringBuffer();
 sb.append("");
 sb.append("SELECT /* orderreport.xml : custcenter.orderreport.selectUserOrderList by UserOrderList */");
 sb.append("                A.ORDER_NO          AS ORDER_NO,  ");
@@ -76,19 +89,40 @@ toolbar.addComponent(new TextField("Promo Name"));
 //-------------------- Header  ------------------------------
 MHorizontalLayout toolmenu;
 toolmenu = new MHorizontalLayout();
-toolmenu.addComponent(new Button("Ret"));
-toolmenu.addComponent(new Button("Ins"));
+//toolmenu.setSizeFull();
+toolmenu.setWidth("100%");
+
+Button ret=new Button("Ret");
+toolmenu.addComponent(ret);
+Button ins=new Button("Ins");
+toolmenu.addComponent(ins);
 toolmenu.addComponent(new Button("Del"));
 toolmenu.addComponent(new Button("Save"));
 toolmenu.addComponent(new Button("Print"));
 toolmenu.addComponent(new Button("XLS"));
-        addComponents(
+
+
+addComponents(
                 new Header("Agent Order List (UserOrderList)"
         ));
         addComponents(toolmenu);
+        toolmenu.setWidth("400px");
+        setComponentAlignment(toolmenu, Alignment.TOP_RIGHT);
         addComponents(toolbar);
         addComponents(isicontents);
 MTable table=new MTable();
+  
+EntityManagerFactory emf=Persistence.createEntityManagerFactory("com.ninofelino_ninofelino_war_1.0-SNAPSHOTPU");
+EntityManager em=emf.createEntityManager();
+Query query=em.createNativeQuery("SELECT * from ad_menu");
+List stList=query.getResultList();
+Iterator stIterator=stList.iterator();
+while(stIterator.hasNext()){
+System.out.print("sname:"+stIterator.next());
+String s="sname:"+stIterator.next();
+System.out.println();
+ Notification.show(s);
+}
 //-------------------- Header Table ---judul untuk table----------
 table.addContainerProperty("No", String.class,  null);
 table.addContainerProperty("ITEM", String.class,  null);

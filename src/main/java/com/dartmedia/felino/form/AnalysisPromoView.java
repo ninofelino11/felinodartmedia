@@ -1,23 +1,29 @@
 package com.dartmedia.felino.form;
-import com.dartmedia.felino.gSqlContainer;
 import com.dartmedia.felino.fgetsql;
+import com.dartmedia.felino.gSqlContainer;
 import com.dartmedia.felino.gSqlContainer;
 import com.vaadin.cdi.CDIView;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
-import org.vaadin.maddon.fields.MTable;
+import com.vaadin.data.util.sqlcontainer.SQLContainer;
+import com.vaadin.data.util.sqlcontainer.connection.SimpleJDBCConnectionPool;
+import com.vaadin.data.util.sqlcontainer.query.FreeformQuery;
 import com.vaadin.event.LayoutEvents;
-import org.vaadin.maddon.layouts.MHorizontalLayout;
+import com.vaadin.navigator.View;
+import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.DateField;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.PopupDateField;
-import com.vaadin.navigator.View;
-import com.vaadin.navigator.ViewChangeListener;
-import com.vaadin.data.util.sqlcontainer.query.FreeformQuery;
+import com.vaadin.ui.RichTextArea;
+import com.vaadin.ui.TextField;
+import com.vaadin.ui.TreeTable;
+import java.sql.SQLException;
 import javax.annotation.PostConstruct;
+import org.vaadin.maddon.fields.MTable;
 import org.vaadin.maddon.label.Header;
+import org.vaadin.maddon.layouts.MHorizontalLayout;
 import org.vaadin.maddon.layouts.MVerticalLayout;
 @CDIView("AnalysisPromo")
 public class AnalysisPromoView extends MVerticalLayout implements View {
@@ -130,7 +136,7 @@ sb.append("            WHERE A.PROMO_NO = B.PROMO_NO                            
 sb.append("              AND A.GOODS_CODE = C.GOODS_CODE                                                         ");
 sb.append("              AND A.GOODS_CODE LIKE '104649' || '%'                                                          ");
 sb.append("           GROUP BY A.PROMO_NO, A.GOODS_CODE, B.PROMO_NAME, C.GOODS_NAME                              ");
-sb.append("           ORDER BY A.PROMO_NO, A.GOODS_CODE, B.PROMO_NAME, C.GOODS_NAME ;                              ");
+sb.append("           ORDER BY A.PROMO_NO, A.GOODS_CODE, B.PROMO_NAME, C.GOODS_NAME                               ");
 //String fsql = data.makeSql();
 //gSqlContainer sumber=new gSqlContainer();
 MHorizontalLayout sidebar = new MHorizontalLayout();
@@ -161,13 +167,29 @@ toolmenu.addComponent(new Button("XLS"));
         addComponents(toolmenu);
         addComponents(toolbar);
         addComponents(isicontents);
-MTable table=new MTable();
+
+        
+String fsql=sb.toString();      
+
+try{
+            SimpleJDBCConnectionPool connectionPool = new SimpleJDBCConnectionPool(
+             "oracle.jdbc.OracleDriver", "jdbc:oracle:thin:@localhost:1521/XE",
+             "dartmedia", "dartmedia",2,5);        
+             SQLContainer container;
+              container = new SQLContainer(new FreeformQuery(
+              sb.toString(),connectionPool,"AD_MENU_ID"));
+             // MTable table= new MTable("MENU",container);    
+               TreeTable table = new TreeTable("Menu", container);
+              addComponents(table);
+ } catch (SQLException e) {
+     e.printStackTrace();
+     RichTextArea rtarea = new RichTextArea();
+     rtarea.setValue(fsql);
+      addComponents(rtarea);
+}
+               
 //-------------------- Header Table ---judul untuk table----------
-table.addContainerProperty("No", String.class,  null);
-table.addContainerProperty("ITEM", String.class,  null);
-table.addContainerProperty("No", String.class,  null);
-//-------------------- Header Table ------------------------------
-   isicontents.addComponents(table);
+
         addLayoutClickListener(new LayoutEvents.LayoutClickListener() {
             @Override
             public void layoutClick(LayoutEvents.LayoutClickEvent event) {

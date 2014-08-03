@@ -33,7 +33,7 @@ public class MainUI extends UI {
     public void init(VaadinRequest request) {
         
         VerticalLayout mainarea = new VerticalLayout();
-        
+       // mainarea.setWidth("100%");
         Navigator navigator = new Navigator(this, mainarea);
         navigator.addProvider(viewProvider);
         navigator.setErrorView(ErrorView.class);

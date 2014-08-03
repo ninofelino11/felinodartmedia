@@ -47,6 +47,7 @@ public class ViewMenu implements Serializable {
     public Component getBasicMenu() {
                     MHorizontalLayout hor=new MHorizontalLayout();
     MenuBar menubar = new MenuBar();
+    
     MenuBar.MenuItem item= menubar.addItem("Item",null,null);
     MenuBar.MenuItem promotion= menubar.addItem("Promotion",null,null);
     MenuBar.MenuItem broadcast= menubar.addItem("Broadcast",null,null);
@@ -318,6 +319,7 @@ public class ViewMenu implements Serializable {
 
 //fgetsql fel=new fgetsql();
             String judul;
+         hor.setWidth("100%");   
          hor.addComponent(menubar);
     //        hor.addComponent(new MHorizontalLayout(getAsLinkButtons(getAvailableViews())));
           return hor;

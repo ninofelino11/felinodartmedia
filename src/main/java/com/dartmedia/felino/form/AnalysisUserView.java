@@ -1,238 +1,70 @@
 package com.dartmedia.felino.form;
-import com.dartmedia.felino.gSqlContainer;
-import com.dartmedia.felino.fgetsql;
-import com.dartmedia.felino.gSqlContainer;
+import com.dartmedia.felino.Sqlfelino;
+import com.dartmedia.felino.sqlFacade;
 import com.vaadin.cdi.CDIView;
-import com.vaadin.data.fieldgroup.BeanFieldGroup;
-import org.vaadin.maddon.fields.MTable;
+import com.vaadin.data.util.sqlcontainer.SQLContainer;
+import com.vaadin.data.util.sqlcontainer.connection.SimpleJDBCConnectionPool;
+import com.vaadin.data.util.sqlcontainer.query.FreeformQuery;
 import com.vaadin.event.LayoutEvents;
-import org.vaadin.maddon.layouts.MHorizontalLayout;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.DateField;
-import com.vaadin.ui.PopupDateField;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
-import com.vaadin.data.util.sqlcontainer.query.FreeformQuery;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.PopupDateField;
+import com.vaadin.ui.TreeTable;
+import java.sql.SQLException;
+import java.util.List;
 import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import org.vaadin.maddon.fields.MTable;
 import org.vaadin.maddon.label.Header;
+import org.vaadin.maddon.layouts.MHorizontalLayout;
 import org.vaadin.maddon.layouts.MVerticalLayout;
 @CDIView("AnalysisUser")
 public class AnalysisUserView extends MVerticalLayout implements View {
 //AnalysisUserSvc data=new AnalysisUserSvc();
+@Inject   sqlFacade cf;
+//@Inject  TenterpriseForm form;
     @PostConstruct
     public void initComponent() {
-// @Inject
-//TbrandForm form;
 /****/
 StringBuffer sb = new StringBuffer();
-sb.append("SELECT");
-sb.append("/*");
-sb.append("orderreport.xml");
-sb.append(":");
-sb.append("custcenter.orderreport.selectAnalysisUser");
-sb.append("by");
-sb.append("AnalysisUser");
-sb.append("*/");
-sb.append("TO_CHAR(TRUNC(A.GATHER_DATE,");
-sb.append("'MONTH'),");
-sb.append("'YYYY/MM'");
-sb.append(")");
-sb.append("AS");
-sb.append("GATHER_DATE");
-sb.append(",");
-sb.append("A.INSERT_ID");
-sb.append("AS");
-sb.append("INSERT_ID");
-sb.append(",");
-sb.append("C.USER_NAME");
-sb.append("AS");
-sb.append("USER_NAME");
-sb.append(",");
-sb.append("SUM(A.ORDER_QTY)");
-sb.append("AS");
-sb.append("ORDER_QTY");
-sb.append(",");
-sb.append("SUM(A.ORDER_AMT)");
-sb.append("AS");
-sb.append("ORDER_AMT");
-sb.append(",");
-sb.append("SUM(A.CANCEL_QTY)");
-sb.append("AS");
-sb.append("CANCEL_QTY");
-sb.append(",");
-sb.append("SUM(A.CANCEL_AMT)");
-sb.append("AS");
-sb.append("CANCEL_AMT");
-sb.append(",");
-sb.append("NVL(SUM(A.CLAIM_QTY),");
-sb.append("0)");
-sb.append("-");
-sb.append("NVL(SUM(A.CLAIM_CAN_QTY),");
-sb.append("0)");
-sb.append("AS");
-sb.append("CLAIM_QTY");
-sb.append(",");
-sb.append("NVL(SUM(A.CLAIM_AMT),");
-sb.append("0)");
-sb.append("-");
-sb.append("NVL(SUM(A.CLAIM_CAN_AMT),");
-sb.append("0)");
-sb.append("AS");
-sb.append("CLAIM_AMT");
-sb.append(",");
-sb.append("NVL(SUM(A.EXCH_QTY");
-sb.append("),");
-sb.append("0)");
-sb.append("-");
-sb.append("NVL(SUM(A.EXCH_CAN_QTY");
-sb.append("),");
-sb.append("0)");
-sb.append("AS");
-sb.append("EXCH_QTY");
-sb.append(",");
-sb.append("NVL(SUM(A.EXCH_AMT");
-sb.append("),");
-sb.append("0)");
-sb.append("-");
-sb.append("NVL(SUM(A.EXCH_CAN_AMT");
-sb.append("),");
-sb.append("0)");
-sb.append("AS");
-sb.append("EXCH_AMT");
-sb.append(",");
-sb.append("(");
-sb.append("NVL(SUM(A.ORDER_QTY),");
-sb.append("0)");
-sb.append("-");
-sb.append("NVL(SUM(A.CANCEL_QTY),");
-sb.append("0)");
-sb.append(")");
-sb.append("-");
-sb.append("(");
-sb.append("NVL(SUM(A.CLAIM_QTY),");
-sb.append("0)");
-sb.append("-");
-sb.append("NVL(SUM(A.CLAIM_CAN_QTY),");
-sb.append("0)");
-sb.append(")");
-sb.append("AS");
-sb.append("NET_ORDER_QTY");
-sb.append(",");
-sb.append("(");
-sb.append("NVL(SUM(A.ORDER_AMT),");
-sb.append("0)");
-sb.append("-");
-sb.append("NVL(SUM(A.CANCEL_AMT),");
-sb.append("0)");
-sb.append(")");
-sb.append("-");
-sb.append("(");
-sb.append("NVL(SUM(A.CLAIM_AMT),");
-sb.append("0)");
-sb.append("-");
-sb.append("NVL(SUM(A.CLAIM_CAN_AMT),");
-sb.append("0)");
-sb.append(")");
-sb.append("AS");
-sb.append("NET_ORDER_AMT");
-sb.append(",");
-sb.append("SUM(A.SHIPFEE_AMT)");
-sb.append("AS");
-sb.append("SHIPFEE_AMT");
-sb.append(",");
-sb.append("SUM(A.SHIPFEE_CAN_AMT)");
-sb.append("AS");
-sb.append("SHIPFEE_CAN_AMT");
-sb.append(",");
-sb.append("SUM(A.SHIPFEE_AMT)");
-sb.append("-");
-sb.append("SUM(A.SHIPFEE_CAN_AMT)");
-sb.append("AS");
-sb.append("NET_SHIPFEE_AMT");
-sb.append("FROM");
-sb.append("TUSER");
-sb.append("C");
-sb.append(",");
-sb.append("TMEDIA");
-sb.append("B");
-sb.append(",");
-sb.append("TSDTM");
-sb.append("A");
-sb.append("WHERE");
-sb.append("C.USER_ID");
-sb.append("=");
-sb.append("A.INSERT_ID");
-sb.append("AND");
-sb.append("B.MEDIA_CODE");
-sb.append("=");
-sb.append("A.MEDIA_CODE");
-sb.append("AND");
-sb.append("A.GATHER_DATE");
-sb.append("BETWEEN");
-sb.append("TO_DATE('2014-01-01',");
-sb.append("'YYYY/MM/DD')");
-sb.append("AND");
-sb.append("TO_DATE('2014-01-01',");
-sb.append("'YYYY/MM/DD')");
-sb.append("AND");
-sb.append("A.ORDER_MEDIA");
-sb.append("=");
-sb.append("'order_media'");
-sb.append("AND");
-sb.append("A.MEDIA_CODE");
-sb.append("=");
-sb.append("'media_code'");
-sb.append("AND");
-sb.append("B.MEDIA_GB");
-sb.append("=");
-sb.append("'media_gb'");
-sb.append("AND");
-sb.append("C.USER_GB");
-sb.append("=");
-sb.append("'user_gb'");
-sb.append("AND");
-sb.append("A.INSERT_ID");
-sb.append("=");
-sb.append("'insert_id'");
-sb.append("GROUP");
-sb.append("BY");
-sb.append("TRUNC(A.GATHER_DATE,");
-sb.append("'DDD'),");
-sb.append("A.INSERT_ID,");
-sb.append("C.USER_NAME");
-sb.append("ORDER");
-sb.append("BY");
-sb.append("TRUNC(A.GATHER_DATE,");
-sb.append("'DDD'),");
-sb.append("A.INSERT_ID,");
-sb.append("C.USER_NAME");
-sb.append("GROUP");
-sb.append("BY");
-sb.append("TRUNC(A.GATHER_DATE,");
-sb.append("'MONTH'),");
-sb.append("A.INSERT_ID,");
-sb.append("C.USER_NAME");
-sb.append("ORDER");
-sb.append("BY");
-sb.append("TRUNC(A.GATHER_DATE,");
-sb.append("'MONTH'),");
-sb.append("A.INSERT_ID,");
-sb.append("C.USER_NAME");
-sb.append("GROUP");
-sb.append("BY");
-sb.append("TRUNC(A.GATHER_DATE,");
-sb.append("''),");
-sb.append("A.INSERT_ID,");
-sb.append("C.USER_NAME");
-sb.append("ORDER");
-sb.append("BY");
-sb.append("TRUNC(A.GATHER_DATE,");
-sb.append("''),");
-sb.append("A.INSERT_ID,");
-sb.append("C.USER_NAME");
+sb.append("");
+sb.append("SELECT /* orderreport.xml : custcenter.orderreport.selectAnalysisUser by AnalysisUser */");
+sb.append("                 TO_CHAR(TRUNC(A.GATHER_DATE, 'MONTH'), 'YYYY/MM' )      AS GATHER_DATE");
+sb.append("               , A.INSERT_ID                     AS INSERT_ID");
+sb.append("               , C.USER_NAME                     AS USER_NAME");
+sb.append("               , SUM(A.ORDER_QTY)                AS ORDER_QTY");
+sb.append("               , SUM(A.ORDER_AMT)                AS ORDER_AMT");
+sb.append("               , SUM(A.CANCEL_QTY)               AS CANCEL_QTY");
+sb.append("               , SUM(A.CANCEL_AMT)               AS CANCEL_AMT");
+sb.append("               , NVL(SUM(A.CLAIM_QTY), 0) - NVL(SUM(A.CLAIM_CAN_QTY), 0) AS CLAIM_QTY");
+sb.append("               , NVL(SUM(A.CLAIM_AMT), 0) - NVL(SUM(A.CLAIM_CAN_AMT), 0) AS CLAIM_AMT");
+sb.append("               , NVL(SUM(A.EXCH_QTY ), 0) - NVL(SUM(A.EXCH_CAN_QTY ), 0) AS EXCH_QTY");
+sb.append("               , NVL(SUM(A.EXCH_AMT ), 0) - NVL(SUM(A.EXCH_CAN_AMT ), 0) AS EXCH_AMT");
+sb.append("               , ( NVL(SUM(A.ORDER_QTY), 0) - NVL(SUM(A.CANCEL_QTY), 0) ) - ( NVL(SUM(A.CLAIM_QTY), 0) - NVL(SUM(A.CLAIM_CAN_QTY), 0) )  AS NET_ORDER_QTY");
+sb.append("               , ( NVL(SUM(A.ORDER_AMT), 0) - NVL(SUM(A.CANCEL_AMT), 0) ) - ( NVL(SUM(A.CLAIM_AMT), 0) - NVL(SUM(A.CLAIM_CAN_AMT), 0) )  AS NET_ORDER_AMT");
+sb.append("               , SUM(A.SHIPFEE_AMT)                                      AS SHIPFEE_AMT");
+sb.append("               , SUM(A.SHIPFEE_CAN_AMT)                                  AS SHIPFEE_CAN_AMT");
+sb.append("               , SUM(A.SHIPFEE_AMT) - SUM(A.SHIPFEE_CAN_AMT)             AS NET_SHIPFEE_AMT");
+sb.append("            FROM TUSER  C");
+sb.append("               , TMEDIA B");
+sb.append("               , TSDTM  A");
+sb.append("           WHERE C.USER_ID    = A.INSERT_ID");
+sb.append("             AND B.MEDIA_CODE = A.MEDIA_CODE");
+sb.append("             AND A.GATHER_DATE BETWEEN TO_DATE('2014-01-01', 'YYYY/MM/DD') AND TO_DATE('2014-01-01', 'YYYY/MM/DD')");
+sb.append("             AND A.ORDER_MEDIA =    'order_media'");
+sb.append("             AND A.MEDIA_CODE  =    'media_code'");
+sb.append("             AND B.MEDIA_GB    =    'media_gb'");
+sb.append("             AND C.USER_GB     =    'user_gb'");
+sb.append("             AND A.INSERT_ID   =    'insert_id'");
+sb.append("        GROUP BY TRUNC(A.GATHER_DATE, 'DDD'), A.INSERT_ID, C.USER_NAME");
+sb.append("        ORDER BY TRUNC(A.GATHER_DATE, 'DDD'), A.INSERT_ID, C.USER_NAME");
+sb.append("        GROUP BY TRUNC(A.GATHER_DATE, 'MONTH'), A.INSERT_ID, C.USER_NAME");
+sb.append("        ORDER BY TRUNC(A.GATHER_DATE, 'MONTH'), A.INSERT_ID, C.USER_NAME");
+sb.append("        GROUP BY TRUNC(A.GATHER_DATE, ''), A.INSERT_ID, C.USER_NAME");
+sb.append("        ORDER BY TRUNC(A.GATHER_DATE, ''), A.INSERT_ID, C.USER_NAME  ");
 //String fsql = data.makeSql();
 //gSqlContainer sumber=new gSqlContainer();
 MHorizontalLayout sidebar = new MHorizontalLayout();
@@ -243,10 +75,11 @@ toolbar.addComponent(new CheckBox("Indv.Query"));
 //-------------------- Header  ------------------------------
 toolbar.addComponent(new PopupDateField("Term"));
 toolbar.addComponent(new PopupDateField("~"));
-
-toolbar.addComponent(new CheckBox("Indv.Query"));
 toolbar.addComponent(new ComboBox("Order Media"));
+toolbar.addComponent(new ComboBox("by Day"));
+toolbar.addComponent(new ComboBox("User Type"));
 toolbar.addComponent(new ComboBox("My ComboBox"));
+
 
 
 //-------------------- Header  ------------------------------
@@ -264,13 +97,43 @@ toolmenu.addComponent(new Button("XLS"));
         addComponents(toolmenu);
         addComponents(toolbar);
         addComponents(isicontents);
-MTable table=new MTable();
+//MTable table=new MTable();
 //-------------------- Header Table ---judul untuk table----------
-table.addContainerProperty("No", String.class,  null);
-table.addContainerProperty("ITEM", String.class,  null);
-table.addContainerProperty("No", String.class,  null);
+
+String fsql=sb.toString();        
+try{
+            SimpleJDBCConnectionPool connectionPool = new SimpleJDBCConnectionPool(
+             "oracle.jdbc.OracleDriver", "jdbc:oracle:thin:@localhost:1521/XE",
+             "dartmedia", "dartmedia",2,5);        
+             SQLContainer container;
+              container = new SQLContainer(new FreeformQuery(
+              fsql,connectionPool,"BRAND_CODE"));
+             // MTable table= new MTable("MENU",container);    
+               TreeTable table = new TreeTable("Menu", container);
+              addComponents(table);
+ } catch (SQLException e) {
+     e.printStackTrace();
+}
+       
+        
+        
+        
+        
+        
+//List<Sqlfelino> findAll = cf.findAll();
+//MTable<Sqlfelino> table=new MTable<Sqlfelino>(Sqlfelino.class);
+//.withProperties("entpName");
+//table.setBeans(findAll);
+//table.addMValueChangeListener(new MValueChangeListener<Tdescribecode>() {
+//    @Override
+//    public void valueChange(MValueChangeEvent<Tdescribecode> event) {
+//    Notification.show("ss");
+//    form.setEntity(event.getValue());
+//    }
+//    });
+//table.addContainerProperty("No", String.class,  null);
 //-------------------- Header Table ------------------------------
-   isicontents.addComponents(table);
+
         addLayoutClickListener(new LayoutEvents.LayoutClickListener() {
             @Override
             public void layoutClick(LayoutEvents.LayoutClickEvent event) {
