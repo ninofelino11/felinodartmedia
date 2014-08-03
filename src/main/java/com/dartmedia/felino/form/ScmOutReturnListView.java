@@ -1,6 +1,5 @@
 package com.dartmedia.felino.form;
 import com.vaadin.cdi.CDIView;
-import org.vaadin.maddon.fields.MTable;
 import com.vaadin.event.LayoutEvents;
 import org.vaadin.maddon.layouts.MHorizontalLayout;
 import com.vaadin.ui.Button;
@@ -8,18 +7,24 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.PopupDateField;
+import com.vaadin.ui.TreeTable;
 import com.vaadin.navigator.View;
+import com.vaadin.ui.RichTextArea;
 import com.vaadin.navigator.ViewChangeListener;
+import com.vaadin.data.util.sqlcontainer.SQLContainer;
+import com.vaadin.data.util.sqlcontainer.connection.SimpleJDBCConnectionPool;
+import com.vaadin.data.util.sqlcontainer.query.FreeformQuery;
 import javax.annotation.PostConstruct;
+import java.sql.SQLException;
 import org.vaadin.maddon.label.Header;
 import org.vaadin.maddon.layouts.MVerticalLayout;
 @CDIView("ScmOutReturnList")
 public class ScmOutReturnListView extends MVerticalLayout implements View {
 //ScmOutReturnListSvc data=new ScmOutReturnListSvc();
+//@Inject   TenterpriseFacade cf;
+//@Inject  TenterpriseForm form;
     @PostConstruct
     public void initComponent() {
-// @Inject
-//TbrandForm form;
 /**Vendor <p:inputText></p:inputText>              Term <p:calendar></p:calendar>  ~ <p:calendar></p:calendar>Item <p:inputText></p:inputText>   Type <p:selectOneRadio>   <f:selectItem itemValue="Order" /><f:selectItem itemValue="Item" />  </p:selectOneRadio>  Order Type <p:selectOneRadio>   <f:selectItem itemValue="Order" /><f:selectItem itemValue="Item" />  </p:selectOneRadio> Step <p:selectOneListbox></p:selectOneListbox>                                                                          **/
 StringBuffer sb = new StringBuffer();
 sb.append("/* HARUSNYA BENER TAPI KOQ GAK ADA RESULTNYA */");
@@ -60,32 +65,32 @@ sb.append("             AND C.ORDER_D_SEQ       = H.ORDER_D_SEQ                 
 sb.append("             AND C.EXCH_PAIR         = H.EXCH_PAIR                                                     ");
 sb.append("             AND H.CLAIM_GB          = '40'                                                            ");
 sb.append("             AND C.CLAIM_DATE      >= TO_DATE('2014/01/01', 'YYYY/MM/DD')                                        ");
-sb.append("             AND C.CLAIM_DATE        < TO_DATE('2014/01/31', 'YYYY/MM/DD') + 1;                                    ");
-sb.append("/*             <if test=entp_code ");
-sb.append("=");
-sb.append("''>");
-sb.append("AND");
-sb.append("D.ENTP_CODE");
-sb.append("=");
-sb.append("#{entp_code,");
-sb.append("jdbcType=VARCHAR}");
-sb.append("</if>");
-sb.append("AND");
-sb.append("C.CLAIM_GB");
-sb.append("=");
-sb.append("#{cs_gb,jdbcType=VARCHAR}");
-sb.append("AND");
-sb.append("C.DO_FLAG");
-sb.append("=");
-sb.append("#{do_flag,jdbcType=VARCHAR}");
-sb.append("AND");
-sb.append("C.GOODS_CODE");
-sb.append("LIKE");
-sb.append("#{goods_code,jdbcType=VARCHAR}");
-sb.append("||");
-sb.append("'%'");
-sb.append("*/");
-sb.append(";");
+sb.append("             AND C.CLAIM_DATE        < TO_DATE('2014/01/31', 'YYYY/MM/DD') + 1                                    ");
+//sb.append("/*             <if test="entp_code ");
+//sb.append("=");
+//sb.append("''">");
+//sb.append("AND");
+//sb.append("D.ENTP_CODE");//
+//sb.append("=");
+//sb.append("#{entp_code,");
+//sb.append("jdbcType=VARCHAR}");
+//sb.append("</if>");
+//sb.append("AND");
+//sb.append("C.CLAIM_GB");
+//sb.append("=");
+//sb.append("#{cs_gb,jdbcType=VARCHAR}");
+//sb.append("AND");
+//sb.append("C.DO_FLAG");
+//sb.append("=");
+//sb.append("#{do_flag,jdbcType=VARCHAR}");
+//sb.append("AND");
+//sb.append("C.GOODS_CODE");
+//sb.append("LIKE");
+//sb.append("#{goods_code,jdbcType=VARCHAR}");
+//sb.append("||");
+//sb.append("'%'");
+//sb.append("*/");
+//sb.append(";");
 //String fsql = data.makeSql();
 //gSqlContainer sumber=new gSqlContainer();
 MHorizontalLayout sidebar = new MHorizontalLayout();
@@ -120,14 +125,38 @@ toolmenu.addComponent(new Button("XLS"));
         ));
         addComponents(toolmenu);
         addComponents(toolbar);
-        addComponents(isicontents);
-MTable table=new MTable();
+//        addComponents(isicontents);
+//MTable table=new MTable();
 //-------------------- Header Table ---judul untuk table----------
-table.addContainerProperty("No", String.class,  null);
-table.addContainerProperty("ITEM", String.class,  null);
-table.addContainerProperty("No", String.class,  null);
+//List<Tenterprise> findAll = cf.findAll();
+//MTable<Tenterprise> table=new MTable<Tenterprise>(Tenterprise.class).withProperties("entpName");
+//table.setBeans(findAll);
+//table.addMValueChangeListener(new MValueChangeListener<Tdescribecode>() {
+//    @Override
+//    public void valueChange(MValueChangeEvent<Tdescribecode> event) {
+//    Notification.show("ss");
+//    form.setEntity(event.getValue());
+//    }
+//    });
+//table.addContainerProperty("No", String.class,  null);
 //-------------------- Header Table ------------------------------
-   isicontents.addComponents(table);
+//   isicontents.addComponents(table);
+try{
+            SimpleJDBCConnectionPool connectionPool = new SimpleJDBCConnectionPool(
+             "oracle.jdbc.OracleDriver", "jdbc:oracle:thin:@localhost:1521/XE",
+             "dartmedia", "dartmedia",2,5);
+             SQLContainer container;
+              container = new SQLContainer(new FreeformQuery(
+              sb.toString(),connectionPool,"AD_MENU_ID"));
+             // MTable table= new MTable("MENU",container);
+               TreeTable table = new TreeTable("Menu", container);
+              addComponents(table);
+ } catch (SQLException e) {
+     e.printStackTrace();
+     RichTextArea rtarea = new RichTextArea();
+     rtarea.setValue(sb.toString());
+      addComponents(rtarea);
+}
         addLayoutClickListener(new LayoutEvents.LayoutClickListener() {
             @Override
             public void layoutClick(LayoutEvents.LayoutClickEvent event) {

@@ -12,22 +12,34 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.DateField;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.PopupDateField;
+import com.vaadin.ui.TreeTable;
 import com.vaadin.navigator.View;
+import com.vaadin.ui.RichTextArea;
 import com.vaadin.navigator.ViewChangeListener;
+import com.vaadin.data.util.sqlcontainer.SQLContainer;
+import com.vaadin.data.util.sqlcontainer.connection.SimpleJDBCConnectionPool;
 import com.vaadin.data.util.sqlcontainer.query.FreeformQuery;
 import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import java.util.List;
+import java.sql.SQLException;
 import org.vaadin.maddon.label.Header;
+import org.vaadin.maddon.fields.MTable;
+import org.vaadin.maddon.fields.MValueChangeEvent;
+import org.vaadin.maddon.fields.MValueChangeListener;
 import org.vaadin.maddon.layouts.MVerticalLayout;
 @CDIView("ScmOutDeliveryOk")
 public class ScmOutDeliveryOkView extends MVerticalLayout implements View {
 //ScmOutDeliveryOkSvc data=new ScmOutDeliveryOkSvc();
+//@Inject   TenterpriseFacade cf;
+//@Inject  TenterpriseForm form;
     @PostConstruct
     public void initComponent() {
-// @Inject
-//TbrandForm form;
 /**Vendor <p:inputText></p:inputText>              Term <p:calendar></p:calendar>  ~ <p:calendar></p:calendar>Item <p:inputText></p:inputText>   Type <p:selectOneRadio>   <f:selectItem itemValue="Order" /><f:selectItem itemValue="Item" />  </p:selectOneRadio> Step <p:selectOneListbox></p:selectOneListbox>                                                    **/
 StringBuffer sb = new StringBuffer();
+StringBuffer sb1 = new StringBuffer();
 sb.append("SELECT /* entpdelivery.xml : logistics.entpdelivery.selectOrderDeliveryOk by ScmOutDeliveryOk */");
 sb.append("                   DISTINCT '0' AS CHECK_YN,                                                                             ");
 sb.append("                 DECODE(OD.DO_FLAG, '20', '', NVL(SM.SLIP_NO, ''))       AS SLIP_NO,                          ");
@@ -67,38 +79,39 @@ sb.append("             AND OD.DO_FLAG          = '30'                          
 sb.append("             AND OD.DELY_TYPE        = '20'                                                                   ");
 sb.append("             AND OD.SYSLAST          > 0 ");
 sb.append("            ");
-sb.append("SELECT /* entpdelivery.xml : logistics.entpdelivery.selectOrderDeliveryDetailOk by ScmOutDeliveryOk */    ");
-sb.append("               OD.ORDER_NO,");
-sb.append("               OD.ORDER_G_SEQ,");
-sb.append("               OD.ORDER_D_SEQ,");
-sb.append("               OD.ORDER_W_SEQ,");
-sb.append("               OD.GOODS_CODE,");
-sb.append("               GM.GOODS_NAME,");
-sb.append("               OD.GOODSDT_CODE,");
-sb.append("               OD.GOODSDT_INFO,");
-sb.append("               OD.GOODS_GB,");
-sb.append("               OD.SYSLAST,");
-sb.append("               OD.SYSLAST_AMT,");
-sb.append("               OD.SYSLAST_NET,");
-sb.append("               OD.SYSLAST_VAT,");
-sb.append("               SD.DELY_QTY,");
-sb.append("               '' AS REMARK");
-sb.append("          FROM TORDERDT  OD,");
-sb.append("               TSLIPDT   SD,");
-sb.append("               TSLIPM    SM,");
-sb.append("               TGOODS    GM");
-sb.append("         WHERE OD.ORDER_NO     = SD.ORDER_NO(+)");
-sb.append("           AND OD.ORDER_G_SEQ  = SD.ORDER_G_SEQ(+)");
-sb.append("           AND OD.ORDER_D_SEQ  = SD.ORDER_D_SEQ(+)");
-sb.append("           AND OD.ORDER_W_SEQ  = SD.ORDER_W_SEQ(+)");
-sb.append("           AND SD.SLIP_I_NO    = SM.SLIP_I_NO(+)");
-sb.append("           AND OD.GOODS_CODE   = GM.GOODS_CODE");
-sb.append("           AND OD.ORDER_NO     = 20140403032491");
-sb.append("           AND NVL(SM.SLIP_I_NO, 'X') = NVL('10000000112407', 'X')");
-sb.append("           AND OD.DO_FLAG        = '30'");
-sb.append("           AND OD.DELY_TYPE      = '20'");
-sb.append("           AND OD.SYSLAST        > 0");
-sb.append("           AND GM.OUT_STOCK_YN   = '0'            ");
+
+sb1.append("SELECT /* entpdelivery.xml : logistics.entpdelivery.selectOrderDeliveryDetailOk by ScmOutDeliveryOk */    ");
+sb1.append("               OD.ORDER_NO,");
+sb1.append("               OD.ORDER_G_SEQ,");
+sb1.append("               OD.ORDER_D_SEQ,");
+sb1.append("               OD.ORDER_W_SEQ,");
+sb1.append("               OD.GOODS_CODE,");
+sb1.append("               GM.GOODS_NAME,");
+sb1.append("               OD.GOODSDT_CODE,");
+sb1.append("               OD.GOODSDT_INFO,");
+sb1.append("               OD.GOODS_GB,");
+sb1.append("               OD.SYSLAST,");
+sb1.append("               OD.SYSLAST_AMT,");
+sb1.append("               OD.SYSLAST_NET,");
+sb1.append("               OD.SYSLAST_VAT,");
+sb1.append("               SD.DELY_QTY,");
+sb1.append("               '' AS REMARK");
+sb1.append("          FROM TORDERDT  OD,");
+sb1.append("               TSLIPDT   SD,");
+sb1.append("               TSLIPM    SM,");
+sb1.append("               TGOODS    GM");
+sb1.append("         WHERE OD.ORDER_NO     = SD.ORDER_NO(+)");
+sb1.append("           AND OD.ORDER_G_SEQ  = SD.ORDER_G_SEQ(+)");
+sb1.append("           AND OD.ORDER_D_SEQ  = SD.ORDER_D_SEQ(+)");
+sb1.append("           AND OD.ORDER_W_SEQ  = SD.ORDER_W_SEQ(+)");
+sb1.append("           AND SD.SLIP_I_NO    = SM.SLIP_I_NO(+)");
+sb1.append("           AND OD.GOODS_CODE   = GM.GOODS_CODE");
+sb1.append("           AND OD.ORDER_NO     = 20140403032491");
+sb1.append("           AND NVL(SM.SLIP_I_NO, 'X') = NVL('10000000112407', 'X')");
+sb1.append("           AND OD.DO_FLAG        = '30'");
+sb1.append("           AND OD.DELY_TYPE      = '20'");
+sb1.append("           AND OD.SYSLAST        > 0");
+sb1.append("           AND GM.OUT_STOCK_YN   = '0'            ");
 //String fsql = data.makeSql();
 //gSqlContainer sumber=new gSqlContainer();
 MHorizontalLayout sidebar = new MHorizontalLayout();
@@ -143,14 +156,38 @@ toolmenu.addComponent(new Button("XLS"));
         ));
         addComponents(toolmenu);
         addComponents(toolbar);
-        addComponents(isicontents);
-MTable table=new MTable();
+//        addComponents(isicontents);
+//MTable table=new MTable();
 //-------------------- Header Table ---judul untuk table----------
-table.addContainerProperty("No", String.class,  null);
-table.addContainerProperty("ITEM", String.class,  null);
-table.addContainerProperty("No", String.class,  null);
+//List<Tenterprise> findAll = cf.findAll();
+//MTable<Tenterprise> table=new MTable<Tenterprise>(Tenterprise.class).withProperties("entpName");
+//table.setBeans(findAll);
+//table.addMValueChangeListener(new MValueChangeListener<Tdescribecode>() {
+//    @Override
+//    public void valueChange(MValueChangeEvent<Tdescribecode> event) {
+//    Notification.show("ss");
+//    form.setEntity(event.getValue());
+//    }
+//    });
+//table.addContainerProperty("No", String.class,  null);
 //-------------------- Header Table ------------------------------
-   isicontents.addComponents(table);
+//   isicontents.addComponents(table);
+try{
+            SimpleJDBCConnectionPool connectionPool = new SimpleJDBCConnectionPool(
+             "oracle.jdbc.OracleDriver", "jdbc:oracle:thin:@localhost:1521/XE",
+             "dartmedia", "dartmedia",2,5);
+             SQLContainer container;
+              container = new SQLContainer(new FreeformQuery(
+              sb.toString(),connectionPool,"AD_MENU_ID"));
+             // MTable table= new MTable("MENU",container);
+               TreeTable table = new TreeTable("Menu", container);
+              addComponents(table);
+ } catch (SQLException e) {
+     e.printStackTrace();
+     RichTextArea rtarea = new RichTextArea();
+     rtarea.setValue(sb.toString());
+      addComponents(rtarea);
+}
         addLayoutClickListener(new LayoutEvents.LayoutClickListener() {
             @Override
             public void layoutClick(LayoutEvents.LayoutClickEvent event) {
