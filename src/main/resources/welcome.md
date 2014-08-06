@@ -1,6 +1,10 @@
-# Vaadin CDI example app
+# Conf
+Java EE 7
+Eclipse Link JPA 2.1
+Tested GlassFish Server 4.0
 
-This is an app stub for Vaadin apps on Java EE7
+
+
 
 
 

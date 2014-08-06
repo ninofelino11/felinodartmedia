@@ -1,4 +1,5 @@
 package com.dartmedia.felino.form;
+import com.cware.back.common.BaseEntity;
 import com.dartmedia.felino.gSqlContainer;
 import com.dartmedia.felino.fgetsql;
 import com.dartmedia.felino.gSqlContainer;
@@ -39,6 +40,7 @@ public class ScmStockCtrlView extends MVerticalLayout implements View {
     public void initComponent() {
 /** Vendor <p:inputText></p:inputText>      Level <p:selectOneListbox> </p:selectOneListbox>**/
 StringBuffer sb = new StringBuffer();
+StringBuffer sb1 = new StringBuffer();
 //String fsql = data.makeSql();
 //gSqlContainer sumber=new gSqlContainer();
 MHorizontalLayout sidebar = new MHorizontalLayout();
@@ -87,13 +89,21 @@ toolmenu.addComponent(new Button("XLS"));
 //   isicontents.addComponents(table);
 try{
             SimpleJDBCConnectionPool connectionPool = new SimpleJDBCConnectionPool(
-             "oracle.jdbc.OracleDriver", "jdbc:oracle:thin:@localhost:1521/XE",
+             "oracle.jdbc.OracleDriver",BaseEntity.jdbc,
              "dartmedia", "dartmedia",2,5);
              SQLContainer container;
               container = new SQLContainer(new FreeformQuery(
               sb.toString(),connectionPool,"AD_MENU_ID"));
              // MTable table= new MTable("MENU",container);
-               TreeTable table = new TreeTable("Menu", container);
+               MTable table = new MTable();
+               table.setContainerDataSource(container);
+table.addMValueChangeListener(new MValueChangeListener() {
+    @Override
+    public void valueChange(MValueChangeEvent event) {
+    Notification.show("ss");
+//    form.setEntity(event.getValue());
+    }
+   });
               addComponents(table);
  } catch (SQLException e) {
      e.printStackTrace();

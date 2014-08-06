@@ -7,19 +7,23 @@
 package com.dartmedia.felino;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -58,6 +62,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Twarehouse.findByWhType", query = "SELECT t FROM Twarehouse t WHERE t.whType = :whType"),
     @NamedQuery(name = "Twarehouse.findBySentToMnc", query = "SELECT t FROM Twarehouse t WHERE t.sentToMnc = :sentToMnc")})
 public class Twarehouse implements Serializable {
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "whCode")
+    private Collection<Tbaljum> tbaljumCollection;
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -415,6 +421,15 @@ public class Twarehouse implements Serializable {
     @Override
     public String toString() {
         return "com.dartmedia.felino.Twarehouse[ whCode=" + whCode + " ]";
+    }
+
+    @XmlTransient
+    public Collection<Tbaljum> getTbaljumCollection() {
+        return tbaljumCollection;
+    }
+
+    public void setTbaljumCollection(Collection<Tbaljum> tbaljumCollection) {
+        this.tbaljumCollection = tbaljumCollection;
     }
     
 }
