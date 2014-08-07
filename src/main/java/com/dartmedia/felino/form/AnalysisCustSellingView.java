@@ -294,7 +294,6 @@ sb2.append("           ORDER BY AA.RANKGRP,AA.RANK,AA.CUST_NO ");
 MHorizontalLayout sidebar = new MHorizontalLayout();
 MHorizontalLayout isicontents=new MHorizontalLayout();
 MHorizontalLayout toolbar = new MHorizontalLayout();
-toolbar.addComponent(new CheckBox("Indv.Query"));
 //TabSheet tabsheet = new TabSheet();
 //-------------------- Header  ------------------------------
 toolbar.addComponent(new PopupDateField("Term"));

@@ -150,6 +150,7 @@ try{
               addComponents(table);
  } catch (SQLException e) {
      e.printStackTrace();
+     Notification.show(e.getMessage());
      RichTextArea rtarea = new RichTextArea();
      rtarea.setValue(sb.toString());
       addComponents(rtarea);

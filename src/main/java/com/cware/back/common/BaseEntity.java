@@ -18,8 +18,8 @@ public class BaseEntity implements Serializable {
   //  public static final String jdbc = "jdbc:oracle:thin:@localhost:1521/XE";
    public static final String jdbc ="jdbc:oracle:thin:@172.29.32.36:1521:GSSHOP";
    public static final String driver ="oracle.jdbc.OracleDriver";
-   public static final String user ="core";
-     public static final String pass ="core";
+   public static final String user ="indonesia";
+     public static final String pass ="u4tn3tsh0pp1ng";
      
             
 	private static final long serialVersionUID = 8676789412691663787L;

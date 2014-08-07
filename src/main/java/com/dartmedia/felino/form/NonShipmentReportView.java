@@ -1,4 +1,5 @@
 package com.dartmedia.felino.form;
+import com.cware.back.common.BaseEntity;
 import com.dartmedia.felino.gSqlContainer;
 import com.dartmedia.felino.fgetsql;
 import com.dartmedia.felino.gSqlContainer;
@@ -39,6 +40,7 @@ public class NonShipmentReportView extends MVerticalLayout implements View {
     public void initComponent() {
 /**Warehouse <p:selectOneListbox></p:selectOneListbox> Vendor <p:inputText></p:inputText>              L grp <p:inputText></p:inputText>              Order Type <p:selectOneRadio>   <f:selectItem itemValue="Order" /><f:selectItem itemValue="Change return" />  <f:selectItem itemValue="All" />  </p:selectOneRadio>                      **/
 StringBuffer sb = new StringBuffer();
+StringBuffer sb1 = new StringBuffer();
 sb.append("");
 sb.append("/* QUERYNYA KOMPLEKS JADI SAYA COPY APA ADANYA AJA YA");
 sb.append("        SELECT /* outreport.xml : logistics.outreport.selectNonShipmentReport by NonShipmentReport */");
@@ -51,7 +53,7 @@ sb.append("                  FROM TSTOCK XB");
 sb.append("                 WHERE XB.GOODS_CODE = XA.GOODS_CODE");
 sb.append("                   AND XB.GOODSDT_CODE = XA.GOODSDT_CODE");
 //sb.append("                  <if test="wh_code ");
-sb.append("=");
+//sb.append("=");
 //sb.append("''">");
 sb.append("AND");
 sb.append("XB.WH_CODE");
@@ -108,7 +110,7 @@ sb.append("XA.SYSLAST,");
 sb.append("0))");
 sb.append("AS");
 sb.append("DELAY_QTY7,");
-//sb.append("SUM(DECODE(SIGN(7");
+sb.append("SUM(DECODE(SIGN(7");
 sb.append("-");
 sb.append("XA.DELAY_DAY),");
 sb.append("-1,");
@@ -217,17 +219,17 @@ sb.append("AND");
 sb.append("TK.LGROUP");
 sb.append("=");
 sb.append("TD.LGROUP");
-sb.append("</if>");
-sb.append("<if");
+//sb.append("</if>");
+//sb.append("<if");
 //sb.append("test="entp_code");
 //sb.append("= ''">");
 sb.append("                     AND TD.ENTP_CODE = #{entp_code  , jdbcType=VARCHAR}");
 sb.append("                     AND TV.ENTP_CODE = TD.ENTP_CODE");
-sb.append("                  </if>");
-sb.append("             </if>");
+//sb.append("                  </if>");
+//sb.append("             </if>");
 //sb.append("               <if test='use_code == ""'>");
 sb.append("                UNION ALL");
-sb.append("               </if>");
+//sb.append("               </if>");
 //sb.append("               <if test='use_code == "0" or use_code == ""'>");
 sb.append("                 SELECT TB.WH_CODE,");
 sb.append("                         TD.GOODS_CODE,");
@@ -255,34 +257,34 @@ sb.append("                    AND TC.DO_FLAG = '20'");
 sb.append("                    AND TB.SYSLAST > 0");
 sb.append("                    AND TB.DO_FLAG > '10'");
 sb.append("                    AND TB.DO_FLAG <");
-sb.append("[CDATA[<]]>");
+//sb.append("[CDATA[<]]>");
 sb.append("'30'");
-sb.append("<if");
+//sb.append("<if");
 //sb.append("test="wh_code");
 //sb.append("= ''">");
 sb.append("                          AND TB.WH_CODE = #{wh_code  , jdbcType=VARCHAR}");
-sb.append("                      </if>");
+//sb.append("                      </if>");
 //sb.append("                      <if test="lgroup_code ");
-sb.append("=");
+//sb.append("=");
 //sb.append("''">");
 sb.append("AND");
 sb.append("TD.LGROUP");
 sb.append("=");
-sb.append("#{lgroup_code");
+//sb.append("#{lgroup_code");
 sb.append(",");
-sb.append("jdbcType=VARCHAR}");
+//sb.append("jdbcType=VARCHAR}");
 sb.append("AND");
 sb.append("TK.LGROUP");
 sb.append("=");
 sb.append("TD.LGROUP");
-sb.append("</if>");
-sb.append("<if");
+//sb.append("</if>");
+//sb.append("<if");
 //sb.append("test="entp_code");
 //sb.append("= ''">");
 sb.append("                       AND TD.ENTP_CODE = #{entp_code  , jdbcType=VARCHAR}");
 sb.append("                    AND TV.ENTP_CODE = TD.ENTP_CODE");
-sb.append("                      </if>");
-sb.append("                      </if>) XA");
+//sb.append("                      </if>");
+//sb.append("                      </if>) XA");
 sb.append("            , TSTOCK XB");
 sb.append("        WHERE XA.WH_CODE      = XB.WH_CODE(+)");
 sb.append("          AND XA.GOODS_CODE   = XB.GOODS_CODE(+)");
@@ -293,7 +295,7 @@ sb.append("              XA.GOODSDT_CODE,");
 sb.append("              XA.GOODSDT_INFO");
 sb.append("     ORDER BY XA.GOODS_CODE,");
 sb.append("              XA.GOODSDT_CODE");
-sb.append("*/ ");
+//sb.append("*/ ");
 //String fsql = data.makeSql();
 //gSqlContainer sumber=new gSqlContainer();
 MHorizontalLayout sidebar = new MHorizontalLayout();
@@ -345,13 +347,21 @@ toolmenu.addComponent(new Button("XLS"));
 //   isicontents.addComponents(table);
 try{
             SimpleJDBCConnectionPool connectionPool = new SimpleJDBCConnectionPool(
-             "oracle.jdbc.OracleDriver", "jdbc:oracle:thin:@localhost:1521/XE",
-             "dartmedia", "dartmedia",2,5);
+             "oracle.jdbc.OracleDriver",BaseEntity.jdbc,
+             BaseEntity.user,BaseEntity.pass,2,5);
              SQLContainer container;
               container = new SQLContainer(new FreeformQuery(
               sb.toString(),connectionPool,"AD_MENU_ID"));
              // MTable table= new MTable("MENU",container);
-               TreeTable table = new TreeTable("Menu", container);
+               MTable table = new MTable();
+               table.setContainerDataSource(container);
+table.addMValueChangeListener(new MValueChangeListener() {
+    @Override
+    public void valueChange(MValueChangeEvent event) {
+    Notification.show("ss");
+//    form.setEntity(event.getValue());
+    }
+   });
               addComponents(table);
  } catch (SQLException e) {
      e.printStackTrace();

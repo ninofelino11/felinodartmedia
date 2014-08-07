@@ -77,18 +77,18 @@ sb.append("        AND SK.GOODSDT_CODE = GD.GOODSDT_CODE");
 sb.append("        AND RC.RACK_MAN_ID  = UR.USER_ID");
 sb.append("        AND SK.CHECK_DATE  >= TO_DATE('2013/11/01', 'YYYY/MM/DD')");
 sb.append("        AND SK.CHECK_DATE   < TO_DATE('2013/11/02', 'YYYY/MM/DD') + 1");
-sb.append("/*        AND SK.CHECK_CODE   LIKE #{check_code, jdbcType=VARCHAR}||'%'");
-sb.append("        AND SK.RACK_CODE    LIKE #{rack_code, jdbcType=VARCHAR}||'%'");
-sb.append("        AND RC.RACK_MAN_ID  LIKE #{rack_man_id, jdbcType=VARCHAR}||'%'");
-sb.append("        AND SK.RESULT_CODE  IN (#{result_code1, jdbcType=VARCHAR},");
-sb.append("                                #{result_code2, jdbcType=VARCHAR},");
-sb.append("                                #{result_code3, jdbcType=VARCHAR})");
-sb.append("        AND GS.LGROUP       LIKE #{lgroup, jdbcType=VARCHAR}||'%'");
-sb.append("        AND GS.MGROUP       LIKE #{mgroup, jdbcType=VARCHAR}||'%'");
-sb.append("        AND GS.SGROUP       LIKE #{sgroup, jdbcType=VARCHAR}||'%'");
-sb.append("        AND GS.DGROUP       LIKE #{dgroup, jdbcType=VARCHAR}||'%' */");
-sb.append("        AND GS.GOODS_CODE   LIKE '%100001%'");
-sb.append("   ORDER BY SK.GOODS_CODE , SK.GOODSDT_CODE , SK.WH_CODE ASC ");
+//sb.append("/*        AND SK.CHECK_CODE   LIKE #{check_code, jdbcType=VARCHAR}||'%'");
+//sb.append("        AND SK.RACK_CODE    LIKE #{rack_code, jdbcType=VARCHAR}||'%'");
+//sb.append("        AND RC.RACK_MAN_ID  LIKE #{rack_man_id, jdbcType=VARCHAR}||'%'");
+//sb.append("        AND SK.RESULT_CODE  IN (#{result_code1, jdbcType=VARCHAR},");
+//sb.append("                                #{result_code2, jdbcType=VARCHAR},");
+//sb.append("                                #{result_code3, jdbcType=VARCHAR})");
+//sb.append("        AND GS.LGROUP       LIKE #{lgroup, jdbcType=VARCHAR}||'%'");
+//sb.append("        AND GS.MGROUP       LIKE #{mgroup, jdbcType=VARCHAR}||'%'");
+//sb.append("        AND GS.SGROUP       LIKE #{sgroup, jdbcType=VARCHAR}||'%'");
+//sb.append("        AND GS.DGROUP       LIKE #{dgroup, jdbcType=VARCHAR}||'%' */");
+//sb.append("        AND GS.GOODS_CODE   LIKE '%100001%'");
+//sb.append("   ORDER BY SK.GOODS_CODE , SK.GOODSDT_CODE , SK.WH_CODE ASC ");
 //String fsql = data.makeSql();
 //gSqlContainer sumber=new gSqlContainer();
 MHorizontalLayout sidebar = new MHorizontalLayout();
@@ -131,10 +131,10 @@ toolmenu.addComponent(new Button("XLS"));
 try{
             SimpleJDBCConnectionPool connectionPool = new SimpleJDBCConnectionPool(
              "oracle.jdbc.OracleDriver",BaseEntity.jdbc,
-             "dartmedia", "dartmedia",2,5);
+             BaseEntity.user,BaseEntity.pass,2,5);
              SQLContainer container;
               container = new SQLContainer(new FreeformQuery(
-              sb.toString(),connectionPool,"AD_MENU_ID"));
+              sb.toString(),connectionPool,"CHECK_GB"));
              // MTable table= new MTable("MENU",container);
                MTable table = new MTable();
                table.setContainerDataSource(container);
@@ -148,7 +148,7 @@ table.addMValueChangeListener(new MValueChangeListener() {
               addComponents(table);
  } catch (SQLException e) {
      e.printStackTrace();
-     RichTextArea rtarea = new RichTextArea();
+     RichTextArea rtarea = new RichTextArea("Error in Sql");
      rtarea.setValue(sb.toString());
       addComponents(rtarea);
 }

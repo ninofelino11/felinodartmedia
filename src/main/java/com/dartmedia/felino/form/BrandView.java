@@ -100,7 +100,8 @@ addComponents(
              SQLContainer container;
               container = new SQLContainer(new FreeformQuery(
               fsql,connectionPool,"BRAND_CODE"));
-             TreeTable table = new TreeTable("Menu", container);
+             MTable table = new MTable();
+             table.setContainerDataSource(container);
             // table.setWidth("200px");
                  
                sidebar.addComponents(table); 

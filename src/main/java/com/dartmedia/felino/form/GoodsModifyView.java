@@ -1,194 +1,139 @@
 package com.dartmedia.felino.form;
+import com.cware.back.common.BaseEntity;
+import com.dartmedia.felino.gSqlContainer;
 import com.dartmedia.felino.fgetsql;
 import com.dartmedia.felino.gSqlContainer;
 import com.vaadin.cdi.CDIView;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
-import com.vaadin.data.util.sqlcontainer.query.FreeformQuery;
-import com.vaadin.event.LayoutEvents;
-import com.vaadin.navigator.View;
-import com.vaadin.navigator.ViewChangeListener;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.PopupDateField;
-import com.vaadin.ui.TextField;
-import javax.annotation.PostConstruct;
 import org.vaadin.maddon.fields.MTable;
-import org.vaadin.maddon.label.Header;
+import com.vaadin.event.LayoutEvents;
 import org.vaadin.maddon.layouts.MHorizontalLayout;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.TextField;
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.DateField;
+import com.vaadin.ui.Notification;
+import com.vaadin.ui.PopupDateField;
+import com.vaadin.ui.TreeTable;
+import com.vaadin.navigator.View;
+import com.vaadin.ui.RichTextArea;
+import com.vaadin.navigator.ViewChangeListener;
+import com.vaadin.data.util.sqlcontainer.SQLContainer;
+import com.vaadin.data.util.sqlcontainer.connection.SimpleJDBCConnectionPool;
+import com.vaadin.data.util.sqlcontainer.query.FreeformQuery;
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import java.util.List;
+import java.sql.SQLException;
+import org.vaadin.maddon.label.Header;
+import org.vaadin.maddon.fields.MTable;
+import org.vaadin.maddon.fields.MValueChangeEvent;
+import org.vaadin.maddon.fields.MValueChangeListener;
 import org.vaadin.maddon.layouts.MVerticalLayout;
 @CDIView("GoodsModify")
 public class GoodsModifyView extends MVerticalLayout implements View {
 //GoodsModifySvc data=new GoodsModifySvc();
+//@Inject   TenterpriseFacade cf;
+//@Inject  TenterpriseForm form;
     @PostConstruct
     public void initComponent() {
-/**Reg Term: <p:calendar id='fromDate'/> ~ <p:calendar id='toDate'/>
-L Grp. Code <p:inputText/>
-//select distinct lgroup, lgroup_name from tgoodskinds; 
-M Group Code <p:inputText/>
-/*
-SELECT /* goodsbase.xml : manage.goodsbase.selectMgroupList by GoodsKindsController */
-/*
-SELECT /* goodsbase.xml : manage.goodsbase.selectSgroupList by GoodsKindsController */
-/*
-SELECT /* goodsbase.xml : manage.goodsbase.selectDgroupList by GoodsKindsController */
-//*/
-//Master Code <p:inputText />
-//select master_code, goods_name, TCODE_NAME('B032', SALE_GB) AS SALE_NAME from TGOODS 
-//Item <p:inputText />
-//select goods_code, goods_name, TCODE_NAME('B032', SALE_GB) AS SALE_NAME from TGOODS **/
 StringBuffer sb = new StringBuffer();
-sb.append("SELECT");
-sb.append("/*");
-sb.append("goods.xml");
-sb.append(":");
-sb.append("manage.goods.selectGoodsModifyList");
-sb.append("by");
-sb.append("GoodsModifyController");
-sb.append("*/");
-sb.append("A.GOODS_CODE");
-sb.append("A.GOODS_NAME");
-sb.append("A.MASTER_CODE");
-sb.append("D.GOODS_NAME");
-sb.append("AS");
-sb.append("MASTER_NAME");
-sb.append("A.LGROUP");
-sb.append("A.MGROUP");
-sb.append("A.SGROUP");
-sb.append("A.DGROUP");
-sb.append("A.BRAND_CODE");
-sb.append("B.BRAND_NAME");
-sb.append("A.ORIGIN_CODE");
-sb.append("C.CODE_NAME");
-sb.append("AS");
-sb.append("ORIGIN_NAME");
-sb.append("FROM");
-sb.append("TGOODS");
-sb.append("A");
-sb.append("TBRAND");
-sb.append("B");
-sb.append("TCODE");
-sb.append("C");
-sb.append("TGOODS");
-sb.append("D");
-sb.append("WHERE");
-sb.append("A.MASTER_CODE");
-sb.append("=");
-sb.append("D.GOODS_CODE");
-sb.append("AND");
-sb.append("A.BRAND_CODE");
-sb.append("=");
-sb.append("B.BRAND_CODE");
-sb.append("AND");
-sb.append("C.CODE_LGROUP");
-sb.append("=");
-sb.append("'B023'");
-sb.append("AND");
-sb.append("A.ORIGIN_CODE");
-sb.append("=");
-sb.append("C.CODE_MGROUP");
-sb.append("AND");
-sb.append("A.INSERT_DATE");
-sb.append(">=");
-sb.append("TO_DATE('2013-01-01'");
-sb.append("'YYYY/MM/DD')");
-sb.append("AND");
-sb.append("A.INSERT_DATE");
-sb.append("<");
-sb.append("TO_DATE('2014-01-01'");
-sb.append("'YYYY/MM/DD')");
-sb.append("+");
-sb.append("1");
-sb.append("AND");
-sb.append("A.LGROUP");
-sb.append("LIKE");
-sb.append("'10'");
-sb.append("||");
-sb.append("'%'");
-sb.append("AND");
-sb.append("A.MGROUP");
-sb.append("LIKE");
-sb.append("'1'");
-sb.append("||");
-sb.append("'%'");
-sb.append("AND");
-sb.append("A.SGROUP");
-sb.append("LIKE");
-sb.append("'1'");
-sb.append("||");
-sb.append("'%'");
-sb.append("AND");
-sb.append("A.DGROUP");
-sb.append("LIKE");
-sb.append("'1'");
-sb.append("||");
-sb.append("'%'");
-sb.append("AND");
-sb.append("A.MASTER_CODE");
-sb.append("LIKE");
-sb.append("'1'");
-sb.append("||");
-sb.append("'%'");
-sb.append("AND");
-sb.append("A.GOODS_CODE");
-sb.append("LIKE");
-sb.append("'1'");
-sb.append("||");
-sb.append("'%';");
+StringBuffer sb1 = new StringBuffer();
+sb.append("");
+sb.append("SELECT /* goods.xml : manage.goods.selectGoodsModifyList by GoodsModifyController */");
+sb.append("              A.GOODS_CODE,");
+sb.append("              A.GOODS_NAME,");
+sb.append("              A.MASTER_CODE,");
+sb.append("              D.GOODS_NAME AS MASTER_NAME,");
+sb.append("              A.LGROUP,");
+sb.append("              A.MGROUP,");
+sb.append("              A.SGROUP,");
+sb.append("              A.DGROUP,");
+sb.append("              A.BRAND_CODE,");
+sb.append("              B.BRAND_NAME,");
+sb.append("              A.ORIGIN_CODE,");
+sb.append("              C.CODE_NAME AS ORIGIN_NAME");
+sb.append("         FROM TGOODS A,");
+sb.append("              TBRAND B,");
+sb.append("              TCODE  C,");
+sb.append("              TGOODS D");
+sb.append("        WHERE A.MASTER_CODE = D.GOODS_CODE");
+sb.append("          AND A.BRAND_CODE = B.BRAND_CODE");
+sb.append("          AND C.CODE_LGROUP = 'B023'");
+sb.append("          AND A.ORIGIN_CODE = C.CODE_MGROUP");
+sb.append("          AND A.INSERT_DATE >= TO_DATE('2013-01-01', 'YYYY/MM/DD')");
+sb.append("          AND A.INSERT_DATE < TO_DATE('2014-01-01', 'YYYY/MM/DD') + 1");
+//sb.append("          AND A.LGROUP LIKE '10' || '%'");
+//sb.append("          AND A.MGROUP LIKE '1' || '%'");
+//sb.append("          AND A.SGROUP LIKE '1' || '%'");
+//sb.append("          AND A.DGROUP LIKE '1' || '%'");
+//sb.append("          AND A.MASTER_CODE LIKE '1' || '%'");
+//sb.append("          AND A.GOODS_CODE LIKE '1' || '%'");
+//sb.append(" ");
 //String fsql = data.makeSql();
-gSqlContainer sumber=new gSqlContainer();
-MTable table=new MTable();
+//gSqlContainer sumber=new gSqlContainer();
+MHorizontalLayout sidebar = new MHorizontalLayout();
+MHorizontalLayout isicontents=new MHorizontalLayout();
 MHorizontalLayout toolbar = new MHorizontalLayout();
 toolbar.addComponent(new CheckBox("Indv.Query"));
 //TabSheet tabsheet = new TabSheet();
 //-------------------- Header  ------------------------------
-toolbar.addComponent(new PopupDateField("Reg Term"));
-toolbar.addComponent(new PopupDateField("~"));
-toolbar.addComponent(new TextField("l grp"));
-toolbar.addComponent(new TextField("S GRP"));
-toolbar.addComponent(new TextField("M Group"));
-toolbar.addComponent(new TextField("D Group"));
-toolbar.addComponent(new TextField("Master Code"));
-toolbar.addComponent(new TextField("Item"));
 
-
-
-
-
-
-//-toolbar.addComponent(new ComboBox("My ComboBox"));
-//-toolbar.addComponent(new Button("My ComboBox"));
 //-------------------- Header  ------------------------------
-//-------------------- Header Table ---judul untuk table----------
-table.addContainerProperty("No", String.class,  null);
-table.addContainerProperty("ITEM CODE", String.class,  null);
-table.addContainerProperty("MASTER CODE", String.class,  null);
-table.addContainerProperty("MASTER ITEM NAME", String.class,  null);
-table.addContainerProperty("L.GRP", String.class,  null);
-table.addContainerProperty("MGRP", String.class,  null);
-table.addContainerProperty("S GRP", String.class,  null);
-table.addContainerProperty("BRAND", String.class,  null);
-table.addContainerProperty("Brand Name", String.class,  null);
-table.addContainerProperty("Origin nAME", String.class,  null);
-
-       
-        
-
-//-------------------- Header Table ------------------------------ 
 MHorizontalLayout toolmenu;
 toolmenu = new MHorizontalLayout();
-toolmenu.addComponent(new Button("User Enviromnet"));
 toolmenu.addComponent(new Button("Ret"));
 toolmenu.addComponent(new Button("Ins"));
+toolmenu.addComponent(new Button("Del"));
 toolmenu.addComponent(new Button("Save"));
 toolmenu.addComponent(new Button("Print"));
 toolmenu.addComponent(new Button("XLS"));
-
-        addComponents( 
-                new Header("GoodsModify")
-        );
+        addComponents(
+                new Header("Item Group Code (GoodsModify)"
+        ));
         addComponents(toolmenu);
-        addComponents(toolbar); 
-        addComponents(table);   
+        addComponents(toolbar);
+//        addComponents(isicontents);
+//MTable table=new MTable();
+//-------------------- Header Table ---judul untuk table----------
+//List<Tenterprise> findAll = cf.findAll();
+//MTable<Tenterprise> table=new MTable<Tenterprise>(Tenterprise.class).withProperties("entpName");
+//table.setBeans(findAll);
+//table.addMValueChangeListener(new MValueChangeListener<Tdescribecode>() {
+//    @Override
+//    public void valueChange(MValueChangeEvent<Tdescribecode> event) {
+//    Notification.show("ss");
+//    form.setEntity(event.getValue());
+//    }
+//    });
+//table.addContainerProperty("No", String.class,  null);
+//-------------------- Header Table ------------------------------
+//   isicontents.addComponents(table);
+try{
+            SimpleJDBCConnectionPool connectionPool = new SimpleJDBCConnectionPool(
+             "oracle.jdbc.OracleDriver",BaseEntity.jdbc,
+             BaseEntity.user,BaseEntity.pass,2,5);
+             SQLContainer container;
+              container = new SQLContainer(new FreeformQuery(
+              sb.toString(),connectionPool,"AD_MENU_ID"));
+             // MTable table= new MTable("MENU",container);
+               MTable table = new MTable();
+               table.setContainerDataSource(container);
+table.addMValueChangeListener(new MValueChangeListener() {
+    @Override
+    public void valueChange(MValueChangeEvent event) {
+    Notification.show("ss");
+//    form.setEntity(event.getValue());
+    }
+   });
+              addComponents(table);
+ } catch (SQLException e) {
+     e.printStackTrace();
+     RichTextArea rtarea = new RichTextArea();
+     rtarea.setValue(sb.toString());
+      addComponents(rtarea);
+}
         addLayoutClickListener(new LayoutEvents.LayoutClickListener() {
             @Override
             public void layoutClick(LayoutEvents.LayoutClickEvent event) {

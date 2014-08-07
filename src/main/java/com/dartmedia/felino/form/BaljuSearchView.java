@@ -1,11 +1,6 @@
 package com.dartmedia.felino.form;
 import com.cware.back.common.BaseEntity;
-import com.dartmedia.felino.Tdescribecode;
-import com.dartmedia.felino.fgetsql;
-import com.dartmedia.felino.gSqlContainer;
-import com.dartmedia.felino.gSqlContainer;
 import com.vaadin.cdi.CDIView;
-import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.util.sqlcontainer.SQLContainer;
 import com.vaadin.data.util.sqlcontainer.connection.SimpleJDBCConnectionPool;
 import com.vaadin.data.util.sqlcontainer.query.FreeformQuery;
@@ -14,17 +9,12 @@ import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.DateField;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.PopupDateField;
 import com.vaadin.ui.RichTextArea;
 import com.vaadin.ui.TextField;
-import com.vaadin.ui.TreeTable;
 import java.sql.SQLException;
-import java.util.List;
 import javax.annotation.PostConstruct;
-import javax.inject.Inject;
 import org.vaadin.maddon.fields.MTable;
 import org.vaadin.maddon.fields.MValueChangeEvent;
 import org.vaadin.maddon.fields.MValueChangeListener;
@@ -183,7 +173,7 @@ try{
           //     table.addMValueChangeListener(new MValueChangeListenerImpl());
             // "No.","PO No","Seq","Vendor Name","Receipt WareHouse","Exprcted Date",""Receipt Date","Step"
              // ,"Condition","Print","Auto","MD Name","PO ENTRY","Staff Email"
-               
+  //tambah indicator paging, [progress bar             
 table.addMValueChangeListener(new MValueChangeListener() {
     @Override
     public void valueChange(MValueChangeEvent event) {

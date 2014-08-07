@@ -1,4 +1,5 @@
 package com.dartmedia.felino.form;
+import com.cware.back.common.BaseEntity;
 import com.dartmedia.felino.gSqlContainer;
 import com.dartmedia.felino.fgetsql;
 import com.dartmedia.felino.gSqlContainer;
@@ -39,6 +40,7 @@ public class AnalysisPromoCouponView extends MVerticalLayout implements View {
     public void initComponent() {
 /****/
 StringBuffer sb = new StringBuffer();
+StringBuffer sb1 = new StringBuffer();
 sb.append(" SELECT /* popup.xml : system.common.popup.selectCustCouponList by PopupController ");
 sb.append("Application Type, Benefit, Promo Code, Promo Name, Suspension Reason, Order No, Paid Date, Use, Use Order No, Cancel, Paid Cancel Date");
 sb.append("*/");
@@ -61,15 +63,14 @@ sb.append("               , TO_CHAR(B.USE_START_DATE, 'YYYY/MM/DD HH24:MI:SS') U
 sb.append("               , TO_CHAR(B.USE_END_DATE, 'YYYY/MM/DD HH24:MI:SS') USE_END_DATE");
 sb.append("          FROM TPROMOM      A,");
 sb.append("               TCOUPONISSUE B");
-sb.append("         WHERE");
-//sb.append(" B.CUST_NO like '201302025649' || '%' AND");
-sb.append("            B.PROMO_NO = A.PROMO_NO ");
+sb.append("         WHERE B.CUST_NO like '201302025649' || '%'");
+sb.append("           AND B.PROMO_NO = A.PROMO_NO ");
 //String fsql = data.makeSql();
 //gSqlContainer sumber=new gSqlContainer();
 MHorizontalLayout sidebar = new MHorizontalLayout();
 MHorizontalLayout isicontents=new MHorizontalLayout();
 MHorizontalLayout toolbar = new MHorizontalLayout();
-toolbar.addComponent(new CheckBox("Indv.Query"));
+
 //TabSheet tabsheet = new TabSheet();
 //-------------------- Header  ------------------------------
 toolbar.addComponent(new PopupDateField("Term"));
@@ -112,16 +113,25 @@ toolmenu.addComponent(new Button("XLS"));
 //   isicontents.addComponents(table);
 try{
             SimpleJDBCConnectionPool connectionPool = new SimpleJDBCConnectionPool(
-             "oracle.jdbc.OracleDriver", "jdbc:oracle:thin:@localhost:1521/XE",
-             "dartmedia", "dartmedia",2,5);
+             "oracle.jdbc.OracleDriver",BaseEntity.jdbc,
+             BaseEntity.user,BaseEntity.pass,2,5);
              SQLContainer container;
               container = new SQLContainer(new FreeformQuery(
-              sb.toString(),connectionPool,"GET_ORDER_NO"));
+              sb.toString(),connectionPool,"PROMO_NO"));
              // MTable table= new MTable("MENU",container);
-               TreeTable table = new TreeTable("Menu", container);
+               MTable table = new MTable();
+               table.setContainerDataSource(container);
+table.addMValueChangeListener(new MValueChangeListener() {
+    @Override
+    public void valueChange(MValueChangeEvent event) {
+    Notification.show("ss");
+//    form.setEntity(event.getValue());
+    }
+   });
               addComponents(table);
  } catch (SQLException e) {
      e.printStackTrace();
+  Notification.show(e.getMessage());
      RichTextArea rtarea = new RichTextArea();
      rtarea.setValue(sb.toString());
       addComponents(rtarea);

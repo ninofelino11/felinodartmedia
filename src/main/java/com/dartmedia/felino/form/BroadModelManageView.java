@@ -1,4 +1,5 @@
 package com.dartmedia.felino.form;
+import com.cware.back.common.BaseEntity;
 import com.dartmedia.felino.gSqlContainer;
 import com.dartmedia.felino.fgetsql;
 import com.dartmedia.felino.gSqlContainer;
@@ -12,70 +13,53 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.DateField;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.PopupDateField;
+import com.vaadin.ui.TreeTable;
 import com.vaadin.navigator.View;
+import com.vaadin.ui.RichTextArea;
 import com.vaadin.navigator.ViewChangeListener;
+import com.vaadin.data.util.sqlcontainer.SQLContainer;
+import com.vaadin.data.util.sqlcontainer.connection.SimpleJDBCConnectionPool;
 import com.vaadin.data.util.sqlcontainer.query.FreeformQuery;
 import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import java.util.List;
+import java.sql.SQLException;
 import org.vaadin.maddon.label.Header;
+import org.vaadin.maddon.fields.MTable;
+import org.vaadin.maddon.fields.MValueChangeEvent;
+import org.vaadin.maddon.fields.MValueChangeListener;
 import org.vaadin.maddon.layouts.MVerticalLayout;
 @CDIView("BroadModelManage")
 public class BroadModelManageView extends MVerticalLayout implements View {
 //BroadModelManageSvc data=new BroadModelManageSvc();
+//@Inject   TenterpriseFacade cf;
+//@Inject  TenterpriseForm form;
     @PostConstruct
     public void initComponent() {
-// @Inject
-//TbrandForm form;
 /****/
 StringBuffer sb = new StringBuffer();
-sb.append("SELECT");
-sb.append("/*");
-sb.append("production.xml");
-sb.append(":");
-sb.append("broadcast.production.selectBroadModelManage");
-sb.append("by");
-sb.append("BroadModelManageController");
-sb.append("*/");
-sb.append("MM.MODEL_NO,");
-sb.append("MM.MODEL_NAME,");
-sb.append("MM.MODEL_ENG_NAME,");
-sb.append("MM.MODEL_FLAG,");
-sb.append("TCODE_NAME('C095',MM.MODEL_FLAG)");
-sb.append("AS");
-sb.append("MODEL_FLAG_NAME,");
-sb.append("MM.ENTP_CODE,");
-sb.append("EP.ENTP_NAME,");
-sb.append("MM.COUNTRY_CODE,");
-sb.append("TCODE_NAME('B023',MM.COUNTRY_CODE)");
-sb.append("AS");
-sb.append("COUNTRY_NAME,");
-sb.append("MM.REMARK,");
-sb.append("MM.USE_YN");
-sb.append("FROM");
-sb.append("TMODELMASTER");
-sb.append("MM,");
-sb.append("TENTERPRISE");
-sb.append("EP");
-sb.append("WHERE");
-sb.append("MM.USE_YN");
-sb.append("=");
-sb.append("'1'");
-sb.append("AND");
-sb.append("MM.ENTP_CODE");
-sb.append("=");
-sb.append("EP.ENTP_CODE");
-sb.append("AND");
-sb.append("MM.ENTP_CODE");
-sb.append("LIKE");
-sb.append("'entp_code'");
-sb.append("||");
-sb.append("'%'");
-sb.append("AND");
-sb.append("MM.MODEL_FLAG");
-sb.append("LIKE");
-sb.append("'model_flag'");
-sb.append("||");
-sb.append("'%'");
+StringBuffer sb1 = new StringBuffer();
+sb.append("");
+sb.append("SELECT        /* production.xml : broadcast.production.selectBroadModelManage by BroadModelManageController */");
+sb.append("            MM.MODEL_NO,");
+sb.append("            MM.MODEL_NAME,");
+sb.append("            MM.MODEL_ENG_NAME,");
+sb.append("            MM.MODEL_FLAG,");
+sb.append("            TCODE_NAME('C095',MM.MODEL_FLAG) AS MODEL_FLAG_NAME,");
+sb.append("            MM.ENTP_CODE,");
+sb.append("            EP.ENTP_NAME,");
+sb.append("            MM.COUNTRY_CODE,");
+sb.append("            TCODE_NAME('B023',MM.COUNTRY_CODE) AS COUNTRY_NAME,");
+sb.append("            MM.REMARK,");
+sb.append("            MM.USE_YN");
+sb.append("        FROM  TMODELMASTER MM,");
+sb.append("              TENTERPRISE  EP");
+sb.append("        WHERE MM.USE_YN    = '1'");
+sb.append("            AND   MM.ENTP_CODE = EP.ENTP_CODE");
+sb.append("            AND   MM.ENTP_CODE LIKE 'entp_code' || '%'");
+sb.append("            AND   MM.MODEL_FLAG LIKE 'model_flag' || '%'     ");
 //String fsql = data.makeSql();
 //gSqlContainer sumber=new gSqlContainer();
 MHorizontalLayout sidebar = new MHorizontalLayout();
@@ -85,6 +69,7 @@ toolbar.addComponent(new CheckBox("Indv.Query"));
 //TabSheet tabsheet = new TabSheet();
 //-------------------- Header  ------------------------------
 toolbar.addComponent(new ComboBox("My ComboBox"));
+toolbar.addComponent(new TextField("Promo Name"));
 toolbar.addComponent(new TextField("Promo Name"));
 
 
@@ -102,14 +87,46 @@ toolmenu.addComponent(new Button("XLS"));
         ));
         addComponents(toolmenu);
         addComponents(toolbar);
-        addComponents(isicontents);
-MTable table=new MTable();
+//        addComponents(isicontents);
+//MTable table=new MTable();
 //-------------------- Header Table ---judul untuk table----------
-table.addContainerProperty("No", String.class,  null);
-table.addContainerProperty("ITEM", String.class,  null);
-table.addContainerProperty("No", String.class,  null);
+//List<Tenterprise> findAll = cf.findAll();
+//MTable<Tenterprise> table=new MTable<Tenterprise>(Tenterprise.class).withProperties("entpName");
+//table.setBeans(findAll);
+//table.addMValueChangeListener(new MValueChangeListener<Tdescribecode>() {
+//    @Override
+//    public void valueChange(MValueChangeEvent<Tdescribecode> event) {
+//    Notification.show("ss");
+//    form.setEntity(event.getValue());
+//    }
+//    });
+//table.addContainerProperty("No", String.class,  null);
 //-------------------- Header Table ------------------------------
-   isicontents.addComponents(table);
+//   isicontents.addComponents(table);
+try{
+            SimpleJDBCConnectionPool connectionPool = new SimpleJDBCConnectionPool(
+             "oracle.jdbc.OracleDriver",BaseEntity.jdbc,
+             BaseEntity.user,BaseEntity.pass,2,5);
+             SQLContainer container;
+              container = new SQLContainer(new FreeformQuery(
+              sb.toString(),connectionPool,"AD_MENU_ID"));
+             // MTable table= new MTable("MENU",container);
+               MTable table = new MTable();
+               table.setContainerDataSource(container);
+table.addMValueChangeListener(new MValueChangeListener() {
+    @Override
+    public void valueChange(MValueChangeEvent event) {
+    Notification.show("ss");
+//    form.setEntity(event.getValue());
+    }
+   });
+              addComponents(table);
+ } catch (SQLException e) {
+     e.printStackTrace();
+     RichTextArea rtarea = new RichTextArea();
+     rtarea.setValue(sb.toString());
+      addComponents(rtarea);
+}
         addLayoutClickListener(new LayoutEvents.LayoutClickListener() {
             @Override
             public void layoutClick(LayoutEvents.LayoutClickEvent event) {

@@ -1,4 +1,5 @@
 package com.dartmedia.felino.form;
+import com.cware.back.common.BaseEntity;
 import com.dartmedia.felino.gSqlContainer;
 import com.dartmedia.felino.fgetsql;
 import com.dartmedia.felino.gSqlContainer;
@@ -39,6 +40,41 @@ public class MultiBroadGoodsView extends MVerticalLayout implements View {
     public void initComponent() {
 /****/
 StringBuffer sb = new StringBuffer();
+StringBuffer sb1 = new StringBuffer();
+sb.append("");
+sb.append("/* Item Code, Item Name, Schedule Type, Seq, Main, Sale Price, Special Matter");
+sb.append("*/");
+sb.append("SELECT /* schedule.xml : broadcast.schedule.selectMultiBroadGoodsList by MultiBroadGoodsController */");
+sb.append("                    A.GOODS_CODE,");
+sb.append("                    B.GOODS_NAME,");
+sb.append("                    A.BD_FLAG,");
+sb.append("                    A.MAIN_YN,");
+sb.append("                    A.SEQ_NO,");
+sb.append("                    C.SALE_PRICE,");
+sb.append("                    A.SALE_TG_QTY,");
+sb.append("                    C.SALE_PRICE * A.SALE_TG_QTY AS PLAN_TG_SALE_PRICE,");
+sb.append("                    A.SPEC_NOTE,");
+sb.append("                    TO_CHAR(A.BD_DATE, 'YYYY/MM/DD')             AS BD_DATE,");
+sb.append("                    TO_CHAR(A.BD_BTIME, 'YYYY/MM/DD HH24:MI:SS') AS BD_BTIME,");
+sb.append("                    TO_CHAR(A.BTIME, 'YYYY/MM/DD HH24:MI:SS')    AS BTIME,");
+sb.append("                    TO_CHAR(A.ETIME, 'YYYY/MM/DD HH24:MI:SS')    AS ETIME,");
+sb.append("                    A.PROG_CODE,");
+sb.append("                    A.SEQ_FRAME_NO,");
+sb.append("                    A.MEDIA_CODE,");
+sb.append("                    DECODE(SIGN(A.BTIME - (SYSDATE + 10/1440)),-1,0,1) AS MODI_YN");
+sb.append("               FROM TMULTIDTBROAD A,");
+sb.append("                    TGOODS B,");
+sb.append("                    TGOODSPRICE C");
+sb.append("              WHERE A.GOODS_CODE = B.GOODS_CODE");
+sb.append("                AND A.GOODS_CODE = C.GOODS_CODE");
+sb.append("                AND C.APPLY_DATE <> A.BD_BTIME");
+sb.append("                AND (C.GOODS_CODE, C.APPLY_DATE) = ( SELECT X.GOODS_CODE, MAX(X.APPLY_DATE)");
+sb.append("                                                       FROM TGOODSPRICE  X");
+sb.append("                                                      WHERE X.GOODS_CODE = A.GOODS_CODE");
+sb.append("                                                        AND X.APPLY_DATE <> A.BD_BTIME");
+sb.append("                                                      GROUP BY X.GOODS_CODE )");
+sb.append("                AND A.SEQ_FRAME_NO = 'seq_frame_no'");
+sb.append("                      ORDER BY A.MAIN_YN DESC, A.SEQ_NO   ");
 //String fsql = data.makeSql();
 //gSqlContainer sumber=new gSqlContainer();
 MHorizontalLayout sidebar = new MHorizontalLayout();
@@ -93,13 +129,21 @@ toolmenu.addComponent(new Button("XLS"));
 //   isicontents.addComponents(table);
 try{
             SimpleJDBCConnectionPool connectionPool = new SimpleJDBCConnectionPool(
-             "oracle.jdbc.OracleDriver", "jdbc:oracle:thin:@localhost:1521/XE",
-             "dartmedia", "dartmedia",2,5);
+             "oracle.jdbc.OracleDriver",BaseEntity.jdbc,
+             BaseEntity.user,BaseEntity.pass,2,5);
              SQLContainer container;
               container = new SQLContainer(new FreeformQuery(
               sb.toString(),connectionPool,"AD_MENU_ID"));
              // MTable table= new MTable("MENU",container);
-               TreeTable table = new TreeTable("Menu", container);
+               MTable table = new MTable();
+               table.setContainerDataSource(container);
+table.addMValueChangeListener(new MValueChangeListener() {
+    @Override
+    public void valueChange(MValueChangeEvent event) {
+    Notification.show("ss");
+//    form.setEntity(event.getValue());
+    }
+   });
               addComponents(table);
  } catch (SQLException e) {
      e.printStackTrace();

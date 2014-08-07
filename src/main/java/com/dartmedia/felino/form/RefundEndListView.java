@@ -50,7 +50,7 @@ sb.append("         R.DO_FLAG,");
 sb.append("         R.SETTLE_GB,");
 sb.append("         R.CLAIM_CODE,");
 sb.append("         R.BANK_CODE,");
-sb.append("         CWARE_ENC_DEC(R.BANK_DEPOSIT_NO, 'd') AS BANK_DEPOSIT_NO,");
+// sb.append("         CWARE_ENC_DEC(R.BANK_DEPOSIT_NO, 'd') AS BANK_DEPOSIT_NO,");
 sb.append("         R.DEPOSITOR,");
 sb.append("         R.REPAY_NOTE,");
 sb.append("         R.REPAY_AMT,");
@@ -139,6 +139,7 @@ table.addMValueChangeListener(new MValueChangeListener() {
               addComponents(table);
  } catch (SQLException e) {
      e.printStackTrace();
+     Notification.show(e.getMessage());
      RichTextArea rtarea = new RichTextArea();
      rtarea.setValue(sb.toString());
       addComponents(rtarea);

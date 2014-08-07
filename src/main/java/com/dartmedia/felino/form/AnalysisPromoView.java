@@ -1,40 +1,47 @@
 package com.dartmedia.felino.form;
-import com.dartmedia.felino.fgetsql;
+import com.cware.back.common.BaseEntity;
 import com.dartmedia.felino.gSqlContainer;
+import com.dartmedia.felino.fgetsql;
 import com.dartmedia.felino.gSqlContainer;
 import com.vaadin.cdi.CDIView;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
-import com.vaadin.data.util.sqlcontainer.SQLContainer;
-import com.vaadin.data.util.sqlcontainer.connection.SimpleJDBCConnectionPool;
-import com.vaadin.data.util.sqlcontainer.query.FreeformQuery;
+import org.vaadin.maddon.fields.MTable;
 import com.vaadin.event.LayoutEvents;
-import com.vaadin.navigator.View;
-import com.vaadin.navigator.ViewChangeListener;
+import org.vaadin.maddon.layouts.MHorizontalLayout;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.PopupDateField;
-import com.vaadin.ui.RichTextArea;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.TreeTable;
-import java.sql.SQLException;
+import com.vaadin.navigator.View;
+import com.vaadin.ui.RichTextArea;
+import com.vaadin.navigator.ViewChangeListener;
+import com.vaadin.data.util.sqlcontainer.SQLContainer;
+import com.vaadin.data.util.sqlcontainer.connection.SimpleJDBCConnectionPool;
+import com.vaadin.data.util.sqlcontainer.query.FreeformQuery;
 import javax.annotation.PostConstruct;
-import org.vaadin.maddon.fields.MTable;
+import javax.inject.Inject;
+import java.util.List;
+import java.sql.SQLException;
 import org.vaadin.maddon.label.Header;
-import org.vaadin.maddon.layouts.MHorizontalLayout;
+import org.vaadin.maddon.fields.MTable;
+import org.vaadin.maddon.fields.MValueChangeEvent;
+import org.vaadin.maddon.fields.MValueChangeListener;
 import org.vaadin.maddon.layouts.MVerticalLayout;
 @CDIView("AnalysisPromo")
 public class AnalysisPromoView extends MVerticalLayout implements View {
 //AnalysisPromoSvc data=new AnalysisPromoSvc();
+//@Inject   TenterpriseFacade cf;
+//@Inject  TenterpriseForm form;
     @PostConstruct
     public void initComponent() {
-// @Inject
-//TbrandForm form;
 /**Term <p:calendar id='fromDate'/> ~ <p:calendar id='toDate'/>Item <p:inputText id='goods_code'/>//select goods_code, goods_name, TCODE_NAME('B032', SALE_GB) AS SALE_NAME from TGOODS Promo Code/Name <p:inputText id='promo_no'/>//select promo_no, promo_name from tpromom;**/
 StringBuffer sb = new StringBuffer();
-sb.append("SELECT A.PROMO_NO       AS PROMO_NO2,                                                        ");
+StringBuffer sb1 = new StringBuffer();
+sb.append(" SELECT A.PROMO_NO       AS PROMO_NO2,                                                        ");
 sb.append("                 A.GOODS_CODE,                                                                        ");
 sb.append("                 B.PROMO_NAME,                                                                        ");
 sb.append("                 C.GOODS_NAME,                                                                        ");
@@ -136,7 +143,7 @@ sb.append("            WHERE A.PROMO_NO = B.PROMO_NO                            
 sb.append("              AND A.GOODS_CODE = C.GOODS_CODE                                                         ");
 sb.append("              AND A.GOODS_CODE LIKE '104649' || '%'                                                          ");
 sb.append("           GROUP BY A.PROMO_NO, A.GOODS_CODE, B.PROMO_NAME, C.GOODS_NAME                              ");
-sb.append("           ORDER BY A.PROMO_NO, A.GOODS_CODE, B.PROMO_NAME, C.GOODS_NAME                               ");
+sb.append("           ORDER BY A.PROMO_NO, A.GOODS_CODE, B.PROMO_NAME, C.GOODS_NAME ");
 //String fsql = data.makeSql();
 //gSqlContainer sumber=new gSqlContainer();
 MHorizontalLayout sidebar = new MHorizontalLayout();
@@ -166,30 +173,47 @@ toolmenu.addComponent(new Button("XLS"));
         ));
         addComponents(toolmenu);
         addComponents(toolbar);
-        addComponents(isicontents);
-
-        
-String fsql=sb.toString();      
-
+//        addComponents(isicontents);
+//MTable table=new MTable();
+//-------------------- Header Table ---judul untuk table----------
+//List<Tenterprise> findAll = cf.findAll();
+//MTable<Tenterprise> table=new MTable<Tenterprise>(Tenterprise.class).withProperties("entpName");
+//table.setBeans(findAll);
+//table.addMValueChangeListener(new MValueChangeListener<Tdescribecode>() {
+//    @Override
+//    public void valueChange(MValueChangeEvent<Tdescribecode> event) {
+//    Notification.show("ss");
+//    form.setEntity(event.getValue());
+//    }
+//    });
+//table.addContainerProperty("No", String.class,  null);
+//-------------------- Header Table ------------------------------
+//   isicontents.addComponents(table);
 try{
             SimpleJDBCConnectionPool connectionPool = new SimpleJDBCConnectionPool(
-             "oracle.jdbc.OracleDriver", "jdbc:oracle:thin:@localhost:1521/XE",
-             "dartmedia", "dartmedia",2,5);        
+             "oracle.jdbc.OracleDriver",BaseEntity.jdbc,
+             BaseEntity.user,BaseEntity.pass,2,5);
              SQLContainer container;
               container = new SQLContainer(new FreeformQuery(
               sb.toString(),connectionPool,"AD_MENU_ID"));
-             // MTable table= new MTable("MENU",container);    
-               TreeTable table = new TreeTable("Menu", container);
+             // MTable table= new MTable("MENU",container);
+               MTable table = new MTable();
+               table.setContainerDataSource(container);
+table.addMValueChangeListener(new MValueChangeListener() {
+    @Override
+    public void valueChange(MValueChangeEvent event) {
+    Notification.show("ss");
+//    form.setEntity(event.getValue());
+    }
+   });
               addComponents(table);
  } catch (SQLException e) {
      e.printStackTrace();
+  Notification.show(e.getMessage());
      RichTextArea rtarea = new RichTextArea();
-     rtarea.setValue(fsql);
+     rtarea.setValue(sb.toString());
       addComponents(rtarea);
 }
-               
-//-------------------- Header Table ---judul untuk table----------
-
         addLayoutClickListener(new LayoutEvents.LayoutClickListener() {
             @Override
             public void layoutClick(LayoutEvents.LayoutClickEvent event) {

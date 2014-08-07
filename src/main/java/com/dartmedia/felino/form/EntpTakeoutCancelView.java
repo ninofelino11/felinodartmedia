@@ -118,7 +118,7 @@ toolmenu.addComponent(new Button("XLS"));
 try{
             SimpleJDBCConnectionPool connectionPool = new SimpleJDBCConnectionPool(
              "oracle.jdbc.OracleDriver",BaseEntity.jdbc,
-             "dartmedia", "dartmedia",2,5);
+             BaseEntity.user,BaseEntity.pass,2,5);
              SQLContainer container;
               container = new SQLContainer(new FreeformQuery(
               sb.toString(),connectionPool,"EOUT_QUEST_NO"));
@@ -135,6 +135,7 @@ table.addMValueChangeListener(new MValueChangeListener() {
               addComponents(table);
  } catch (SQLException e) {
      e.printStackTrace();
+     Notification.show(e.getMessage());
      RichTextArea rtarea = new RichTextArea();
      rtarea.setValue(sb.toString());
       addComponents(rtarea);

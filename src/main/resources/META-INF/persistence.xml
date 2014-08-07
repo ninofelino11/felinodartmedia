@@ -8,8 +8,13 @@
     <class>com.dartmedia.felino.Tcustsettle</class>
     <class>com.dartmedia.felino.Tcustspinfo</class>
     <class>com.dartmedia.felino.Tenterprise</class>
+    <class>com.dartmedia.felino.Tvideomanage</class>
+    <class>com.dartmedia.felino.Tgoodskinds</class>
+    <class>com.dartmedia.felino.Tareashipcost</class>
+    <class>com.dartmedia.felino.Tdescribecode</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <validation-mode>NONE</validation-mode>
     <properties/>
+    
   </persistence-unit>
 </persistence>
